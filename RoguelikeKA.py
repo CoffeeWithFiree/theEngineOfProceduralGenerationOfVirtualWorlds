@@ -18,7 +18,7 @@ class RoguelikeKA:
     def create_start_matrix(self):
         Res_x = settings.width_RL  # Right
         Res_y = settings.height_RL  # Up
-        Res_z = settings.length_RL  # forward
+        Res_z = settings.length_RL  # forwardd
 
         matrix = self.np.zeros((Res_x, Res_y, Res_z))
         for y in range(Res_y):
