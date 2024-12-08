@@ -9,7 +9,14 @@ class RoguelikeKA:
         self.np = np
         self.graphic3D = graphic3D
 
+        #Start random matrix
         self.matrix = self.create_start_matrix()
+
+        #Order out of chaos
+        for _ in range(20):
+            self.next_generation_lands()
+
+        #Every Land ~15-25 cells, 7 lands
 
 
 
@@ -25,7 +32,7 @@ class RoguelikeKA:
             for x in range(Res_x):
                 for z in range(Res_z):
                     if y == 0:
-                        r = random.randint(1, 2)
+                        r = random.randint(1, 3)
                         matrix[x, y, z] = BiomesType.land_RL if (r == 1) else BiomesType.air_RL
                     else:
                         matrix[x, y, z] = BiomesType.air_RL
@@ -67,7 +74,7 @@ class RoguelikeKA:
                     if self.matrix[x, y, z] == BiomesType.land_RL:
                         vertices_cur = vertices
                         triangles_cur = triangles_land
-                        position_cur = self.np.array([x * 2 + 15, y * 2 + 30, z * 2 + 22])
+                        position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
                         object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
 
                         objects[f"object{i}"] = object_cur
@@ -121,21 +128,21 @@ class RoguelikeKA:
 
                 # [x - 1][z + 1]
                 if (x - 1) >= 0 and (z + 1 <= (settings.rows - 1)):
-                    if self.matrix[x + 1][y][z] == BiomesType.land_RL:
+                    if self.matrix[x - 1][y][z + 1] == BiomesType.land_RL:
                         land_counter += 1
                     else:
                         air_counter += 1
 
                 # [x][z + 1]
                 if (z + 1 <= (settings.rows - 1)):
-                    if self.matrix[x + 1][y][z] == BiomesType.land_RL:
+                    if self.matrix[x][y][z + 1] == BiomesType.land_RL:
                         land_counter += 1
                     else:
                         air_counter += 1
 
                 # [x + 1][z + 1]
                 if ((x + 1) <= (settings.columns - 1)) and (z + 1 <= (settings.rows - 1)):
-                    if self.matrix[x + 1][y][z] == BiomesType.land_RL:
+                    if self.matrix[x + 1][y][z + 1] == BiomesType.land_RL:
                         land_counter += 1
                     else:
                         air_counter += 1
@@ -143,5 +150,20 @@ class RoguelikeKA:
                 warning_amounts = [3, 6, 7, 8]
 
                 #current cell is land
+                if self.matrix[x][y][z] == BiomesType.land_RL:
+                    if air_counter in warning_amounts:
+                        self.matrix[x][y][z] = BiomesType.air_RL
 
                 #current cell is air
+
+                elif self.matrix[x][y][z] == BiomesType.air_RL:
+                    if land_counter in warning_amounts:
+                        self.matrix[x][y][z] = BiomesType.land_RL
+
+
+    def counter_land(self):
+        """a counter for the number of islands and their sizes"""
+        Res_x = settings.width_RL  # Right
+        Res_y = settings.height_RL  # Up
+        Res_z = settings.length_RL  # forward
+        matrix_cond = self.np.zeros((Res_x, Res_y, Res_z))

@@ -11,7 +11,7 @@ class settings():
 
     #y is height
 
-    Res = [24, 12, 24] #x #y # z
+    Res = [24, 12, 24] #x #y #z
 
     width = 12  #x
     height = 6 #y
@@ -22,19 +22,19 @@ class settings():
 
     #RougeLikeKA
 
-    Res_RL = [24, 4, 24] #x #y # z
+    Res_RL = [48, 4, 48] #x #y # z
 
-    rows = 12
+    rows = 24
     heights = 2
-    columns = 12
+    columns = 24
 
     basicX = Res_RL[0] / rows
     basicY = Res_RL[1] / heights
     basicZ = Res_RL[2] / columns
 
-    width_RL = 12 #x
+    width_RL = 24 #x
     height_RL = 2 #y
-    length_RL = 12 #z
+    length_RL = 24 #z
 
     color_land_RL = (0, 153, 0)
 

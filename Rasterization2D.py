@@ -266,7 +266,7 @@ class Rasterization2D:
             x_left = x012
             x_right = x02
         #Drawing horizontal segments
-        for y in range(P0[1], P2[1] - 1): #На 199 y все ломается
+        for y in range(P0[1], P2[1] - 1): 
             for x in range(floor(x_left[y - P0[1]]), floor(x_right[y - P0[1]])):
                 self.pg.draw.circle(self.screen, color, (x,y), 1)
 
