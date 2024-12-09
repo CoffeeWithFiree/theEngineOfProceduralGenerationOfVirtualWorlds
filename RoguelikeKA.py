@@ -1,6 +1,7 @@
 from settings import settings
 from BiomesType import BiomesType
 import random
+from FloodFeelCounter import FloodFeelCounter
 
 class RoguelikeKA:
     def __init__(self, main, pg, np, graphic3D):
@@ -16,7 +17,19 @@ class RoguelikeKA:
         for _ in range(20):
             self.next_generation_lands()
 
-        #Every Land ~15-25 cells, 7 lands
+        #Every Land ~20-25 cells, 12 lands
+        self.matrix_cond, self.size_of_land, self.amounts_lands = self.counter_land()
+
+        # print(f"amount of lands = {self.amounts_lands}")
+        # print(f"size of lands = {self.size_of_land}")
+        # print(f"matrix_cond =")
+        # for i in self.matrix_cond:
+        #     print(i)
+
+
+
+
+
 
 
 
@@ -166,4 +179,29 @@ class RoguelikeKA:
         Res_x = settings.width_RL  # Right
         Res_y = settings.height_RL  # Up
         Res_z = settings.length_RL  # forward
-        matrix_cond = self.np.zeros((Res_x, Res_y, Res_z))
+        matrix_cond = self.np.zeros((Res_x, Res_z))
+
+        number_of_matrix = 1
+        size_of_land = dict()
+        for i in range(len(self.matrix)):
+            for j in range(len(self.matrix[i][0])):
+                if matrix_cond[i][j] == 0 and self.matrix[i][0][j] == BiomesType.land_RL:
+                    flood_feel = FloodFeelCounter(self.matrix, matrix_cond, i, j, number_of_matrix, self.np)
+                    matrix_cond, size_of_land[number_of_matrix] = flood_feel.Feel()
+                    number_of_matrix += 1
+
+
+
+        return matrix_cond, size_of_land, number_of_matrix - 1
+
+    def OrderingIslands(self):
+        """Ordering islands by number and size"""
+        pass
+
+    def Expansion(self):
+        """The expansion of too small islands"""
+        pass
+
+    def Cut(self):
+        """cutting the island into 2 parts"""
+        pass

@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class FloodFeelCounter:
     def __init__(self, matrix, matrix_cond, x, z, value, np):
         self.matrix = matrix
@@ -8,21 +5,20 @@ class FloodFeelCounter:
         self.x = x
         self.z = z
         self.x_len = len(matrix)
-        self.y_len = len(matrix[0])
         self.z_len = len(matrix[0][0])
-        self.condition = matrix[x, z]
+        self.condition = matrix[x][0][z]
         self.value = value
         self.np = np
 
 
     def Feel(self):
         stack_ = [(self.x, self.z)]
-        counter = 1
+        counter = 0
         while stack_:
 
             r, c = stack_.pop()
-            if self.matrix[r][0][c] == self.condition:
-                self.matrix_cond[r][0][c] = self.value
+            if self.matrix[r][0][c] == self.condition and self.matrix_cond[r][c] == 0:
+                self.matrix_cond[r][c] = self.value
                 counter += 1
 
                 if r + 1 < self.x_len:
