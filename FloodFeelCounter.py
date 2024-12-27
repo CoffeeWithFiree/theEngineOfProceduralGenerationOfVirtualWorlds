@@ -1,5 +1,8 @@
+from BiomesType import BiomesType
+
+
 class FloodFeelCounter:
-    def __init__(self, matrix, matrix_cond, x, z, value, np):
+    def __init__(self, matrix, matrix_cond, x, z, value, np, min_limit = 0):
         self.matrix = matrix
         self.matrix_cond = matrix_cond
         self.x = x
@@ -9,6 +12,7 @@ class FloodFeelCounter:
         self.condition = matrix[x][0][z]
         self.value = value
         self.np = np
+        self.min_limit = min_limit
 
 
     def Feel(self):
@@ -31,5 +35,3 @@ class FloodFeelCounter:
                     stack_.append((r, c - 1))
 
         return self.matrix_cond, counter
-
-
