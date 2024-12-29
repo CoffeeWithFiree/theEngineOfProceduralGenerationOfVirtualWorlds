@@ -12,17 +12,16 @@ class RoguelikeKA:
         self.graphic3D = graphic3D
 
         #Start random matrix
-        self.matrix = self.create_start_matrix()
+        self.matrix = self.CreateStartMatrix()
 
         #Order out of chaos
         for _ in range(20):
-            self.next_generation_lands()
+            self.NextGenerationLands()
 
-        # self.need_lands = 12
-        # self.need_size = np.array([20, 25]) #min and max
-
-        #Every Land ~20-25 cells, 12 lands
+        #Every Land ~18-23 cells, 9-13 lands
         self.matrix_cond, self.size_of_land, self.amounts_lands = self.CounterLand()
+
+
 
         ord_island = OrderingIsland(self.matrix, self.matrix_cond, self.size_of_land, self.amounts_lands, self.np)
 
@@ -40,7 +39,7 @@ class RoguelikeKA:
 
         print("Matrix was create")
 
-    def create_start_matrix(self):
+    def CreateStartMatrix(self):
         Res_x = settings.width_RL  # Right
         Res_y = settings.height_RL  # Up
         Res_z = settings.length_RL  # forwardd
@@ -101,7 +100,7 @@ class RoguelikeKA:
 
         self.graphic3D.RenderScene(objects)
 
-    def next_generation_lands(self):
+    def NextGenerationLands(self):
         """the ordered state of land and sea"""
         y = 0 #Use just for first layer
         warning_amounts = [3, 6, 7, 8]
@@ -172,7 +171,6 @@ class RoguelikeKA:
                         self.matrix[x][y][z] = BiomesType.air_RL
 
                 #current cell is air
-
                 elif self.matrix[x][y][z] == BiomesType.air_RL:
                     if land_counter in warning_amounts:
                         self.matrix[x][y][z] = BiomesType.land_RL

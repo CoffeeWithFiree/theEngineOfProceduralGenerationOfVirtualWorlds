@@ -12,12 +12,13 @@ class OrderingIsland:
         self.amounts_lands = amounts_lands
         self.np = np
 
+        #POST-PROCESSING
+        self.FixDiagonalConflict()
 
         self.need_lands = self.np.array([9, 10, 11, 12, 13])
         self.need_size = self.np.array([18, 19, 20, 21, 22, 23])  # min and max
 
         status_amount_of_lands = self.SetStatusAmount()
-        #####DON'T FORGET BOUT SHOT WARNING####
         while (not (self.amounts_lands in self.need_lands)) or (any(v not in self.need_size for v in self.size_of_land.values())):
             signal_was_change = False
             size_of_land_helper = self.size_of_land.copy()
@@ -399,3 +400,40 @@ class OrderingIsland:
                 indexes.append([x + 1, y + 1])
 
         return False if (len(indexes) == 0) else indexes
+
+    def FixDiagonalConflict(self):
+        """Removing islands at the corners of other islands"""
+        for x in range(len(self.matrix_cond)):
+            for y in range(len(self.matrix_cond[x])):
+                if self.matrix_cond[x][y] != 0:
+                    if self.CheckAround(x, y, self.matrix_cond[x][y]) == False:
+                        # [x - 1][y - 1]
+                        if (x - 1) >= 0 and (y - 1) >= 0:
+                            if self.matrix_cond[x - 1][y - 1] != 0 and self.matrix_cond[x - 1][y - 1] != self.matrix_cond[x][y]:
+                                self.CheckZeroIsland(self.matrix_cond[x - 1][y - 1])
+                                self.matrix_cond[x - 1][y - 1] = 0
+
+                        # [x + 1][y - 1]
+                        if (x + 1) <= (settings.columns - 1) and (y - 1) >= 0:
+                            if self.matrix_cond[x + 1][y - 1] != 0 and self.matrix_cond[x + 1][y - 1] != self.matrix_cond[x][y]:
+                                self.CheckZeroIsland(self.matrix_cond[x + 1][y - 1])
+                                self.matrix_cond[x + 1][y - 1] = 0
+
+                        # [x - 1][y + 1]
+                        if (x - 1) >= 0 and (y + 1 <= (settings.rows - 1)):
+                            if self.matrix_cond[x - 1][y + 1] != 0 and self.matrix_cond[x - 1][y + 1] != self.matrix_cond[x][y]:
+                                self.CheckZeroIsland(self.matrix_cond[x - 1][y + 1])
+                                self.matrix_cond[x - 1][y + 1] = 0
+
+                        # [x + 1][y + 1]
+                        if ((x + 1) <= (settings.columns - 1)) and (y + 1 <= (settings.rows - 1)):
+                            if self.matrix_cond[x + 1][y + 1] != 0 and self.matrix_cond[x + 1][y + 1] != self.matrix_cond[x][y]:
+                                self.CheckZeroIsland(self.matrix_cond[x + 1][y + 1])
+                                self.matrix_cond[x + 1][y + 1] = 0
+
+    def CheckZeroIsland(self, number_of_land):
+        """Checking that the island is no more"""
+        self.size_of_land[number_of_land] -= 1
+        if self.size_of_land[number_of_land] == 0:
+            del self.size_of_land[number_of_land]
+            self.amounts_lands -= 1
