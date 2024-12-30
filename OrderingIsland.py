@@ -46,7 +46,7 @@ class OrderingIsland:
                         signal_was_change = True
 
                     elif status_amount_of_lands == "less":
-                        self.Cut(key, centr, sides_x, sides_y)
+                        self.Cut(key, centr, sides_x, sides_y) ###GOOD###
                         self.amounts_lands += 1
                         status_amount_of_lands = self.SetStatusAmount()
                         del self.size_of_land[key]
@@ -166,29 +166,67 @@ class OrderingIsland:
         """reduces the size of too large islands"""
 
         while self.size_of_land[number_of_land] > self.need_size[-1]:
-            if (sides_x[1] - sides_x[0]) >= (sides_y[1] - sides_y[0]):
-                for x in range(sides_x[0], sides_x[1] + 1):
-                    for y in range(sides_y[0], sides_y[1] + 1):
+            x = sides_x[0]
+            for y in range(sides_y[0], sides_y[1]):
+                self.CheckCurCellIsCurIsland(x, y, number_of_land)
+                if self.size_of_land[number_of_land] <= self.need_size[-1]:
+                    return
 
-                        if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
-                            if self.matrix_cond[x][y] == number_of_land:
-                                self.matrix_cond[x][y] = 0
-                                self.matrix[x][0][y] = BiomesType.air_RL
-                                self.size_of_land[number_of_land] -= 1
-                                if self.size_of_land[number_of_land] <= self.need_size[-1]:
-                                    return
+            y = sides_y[0]
+            for x in range(sides_x[0], sides_x[1]):
+                self.CheckCurCellIsCurIsland(x, y, number_of_land)
+                if self.size_of_land[number_of_land] <= self.need_size[-1]:
+                    return
 
-            else:
-                for y in range(sides_y[0], sides_y[1] + 1):
-                    for x in range(sides_x[0], sides_x[1] + 1):
+            x = sides_x[1]
+            for y in range(sides_y[0], sides_y[1]):
+                self.CheckCurCellIsCurIsland(x, y, number_of_land)
+                if self.size_of_land[number_of_land] <= self.need_size[-1]:
+                    return
 
-                        if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
-                            if self.matrix_cond[x][y] == number_of_land:
-                                self.matrix_cond[x][y] = 0
-                                self.matrix[x][0][y] = BiomesType.air_RL
-                                self.size_of_land[number_of_land] -= 1
-                                if self.size_of_land[number_of_land] <= self.need_size[-1]:
-                                    return
+            y = sides_y[1]
+            for x in range(sides_x[0], sides_x[1]):
+                self.CheckCurCellIsCurIsland(x, y, number_of_land)
+                if self.size_of_land[number_of_land] <= self.need_size[-1]:
+                    return
+
+            sides_x[0] += 1
+            sides_x[1] -= 1
+            sides_y[0] += 1
+            sides_y[1] -= 1
+
+        # while self.size_of_land[number_of_land] > self.need_size[-1]:
+        #     if (sides_x[1] - sides_x[0]) >= (sides_y[1] - sides_y[0]):
+        #         for x in range(sides_x[0], sides_x[1] + 1):
+        #             for y in range(sides_y[0], sides_y[1] + 1):
+        #
+        #                 if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
+        #                     if self.matrix_cond[x][y] == number_of_land:
+        #                         self.matrix_cond[x][y] = 0
+        #                         self.matrix[x][0][y] = BiomesType.air_RL
+        #                         self.size_of_land[number_of_land] -= 1
+        #                         if self.size_of_land[number_of_land] <= self.need_size[-1]:
+        #                             return
+        #
+        #     else:
+        #         for y in range(sides_y[0], sides_y[1] + 1):
+        #             for x in range(sides_x[0], sides_x[1] + 1):
+        #
+        #                 if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
+        #                     if self.matrix_cond[x][y] == number_of_land:
+        #                         self.matrix_cond[x][y] = 0
+        #                         self.matrix[x][0][y] = BiomesType.air_RL
+        #                         self.size_of_land[number_of_land] -= 1
+        #                         if self.size_of_land[number_of_land] <= self.need_size[-1]:
+        #                             return
+
+    def CheckCurCellIsCurIsland(self, x, y, number_of_land):
+        """a function that verifies that the current cell is the current island"""
+        if self.matrix_cond[x][y] == number_of_land:
+            self.matrix_cond[x][y] = 0
+            self.matrix[x][0][y] = BiomesType.air_RL
+            self.size_of_land[number_of_land] -= 1
+
 
     def CreateNewIsland(self):
         """Creating a new island in a suitable empty area"""
