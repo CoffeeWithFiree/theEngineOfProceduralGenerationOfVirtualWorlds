@@ -36,7 +36,7 @@ class OrderingIsland:
                         if self.Expansion(key, sides_x, sides_y): #If True -> Something is preventing it from expanding ####GOOD###
                             self.DeleteIsland(key, sides_x, sides_y)
                             del self.size_of_land[key]
-                            self.CreateNewIsland() ####AN ISLAND WAS CREATED INCORRECTLY. ISLANDS CAN BE CREATED IN A LINE WHEN CAN BE SQUARED.
+                            self.CreateNewIsland() ####AN ISLAND WAS CREATED INCORRECTLY. ISLANDS CREATED IN A LINE WHEN CAN BE SQUARED.
                         signal_was_change = True
 
                 elif value > self.need_size[-1]:
@@ -217,25 +217,38 @@ class OrderingIsland:
     def FeelNewLand(self, number_of_land, x, y):
         stack_ = [(x, y)]
         counter = 0
-        while stack_:
 
-            r, c = stack_.pop()
+        min_x, max_x = x, x
+        min_y, max_y = y, y
+
+        while stack_:
+            r, c = stack_.pop(0)
             if self.matrix_cond[r][c] == 0:
                 if self.CheckAround(r, c, number_of_land):
                     self.matrix_cond[r][c] = number_of_land
                     self.matrix[r][0][c] = BiomesType.land_RL
                     counter += 1
+
                     if counter >= self.need_size[0]:
                         return counter
 
-                    if r + 1 < len(self.matrix_cond):
-                        stack_.append((r + 1, c))
-                    if r - 1 >= 0:
-                        stack_.append((r - 1, c))
-                    if c + 1 < len(self.matrix_cond[r]):
-                        stack_.append((r, c + 1))
-                    if c - 1 >= 0:
-                        stack_.append((r, c - 1))
+                    min_x, max_x = min(min_x, r), max(max_x, r)
+                    min_y, max_y = min(min_y, c), max(max_y, c)
+
+                    for nx in range(min_x, max_x + 2):
+                        if 0 <= nx < len(self.matrix_cond):
+                            if min_y - 1 >= 0:
+                                stack_.append((nx, min_y - 1))
+                            if max_y + 1 < len(self.matrix_cond[x]):
+                                stack_.append((nx, max_y + 1))
+
+                    for ny in range(min_y, max_y + 2):
+                        if 0 <= ny < len(self.matrix_cond[0]):
+                            if min_x - 1 >= 0:
+                                stack_.append((min_x - 1, ny))
+                            if max_x + 1 < len(self.matrix_cond):
+                                stack_.append((max_x + 1, ny))
+
         return counter
 
     def Counter_Islands(self, number_of_land, x, y):
