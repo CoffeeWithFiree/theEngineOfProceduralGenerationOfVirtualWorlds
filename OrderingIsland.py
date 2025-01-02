@@ -1,6 +1,7 @@
 from settings import settings
 from BiomesType import BiomesType
 from FloodFeelCounter import FloodFeelCounter
+import random
 
 class OrderingIsland:
     def __init__(self, matrix, matrix_cond, size_of_land, amounts_lands, np):
@@ -36,7 +37,7 @@ class OrderingIsland:
                         if self.Expansion(key, sides_x, sides_y): #If True -> Something is preventing it from expanding ####GOOD###
                             self.DeleteIsland(key, sides_x, sides_y)
                             del self.size_of_land[key]
-                            self.CreateNewIsland() ####AN ISLAND WAS CREATED INCORRECTLY. ISLANDS CREATED IN A LINE WHEN CAN BE SQUARED.
+                            self.CreateNewIsland()
                         signal_was_change = True
 
                 elif value > self.need_size[-1]:
@@ -205,14 +206,32 @@ class OrderingIsland:
 
     def CreateNewIsland(self):
         """Creating a new island in a suitable empty area"""
-        for x in range(len(self.matrix_cond)):
-            for y in range(len(self.matrix_cond[x])):  ###THE BETTER OPTION: BUSTING WITH A SQUARE, NOT IN A LINE
-                if self.matrix_cond[x][y] == 0:
-                    if self.Counter_Islands(0, x, y) >= self.need_size[0]:
-                        max_key = max(self.size_of_land)
-                        number_of_land = max_key + 1
-                        self.size_of_land[number_of_land] = self.FeelNewLand(number_of_land, x, y)
-                        return
+        start_x = random.randint(0, (len(self.matrix_cond) - 1))
+        start_y = random.randint(0, (len(self.matrix_cond[0]) - 1))
+
+        min_x, max_x = start_x, start_x
+        min_y, max_y = start_y, start_y
+
+        while min_x >= 0 or max_x < len(self.matrix_cond) or min_y >= 0 or max_y < len(self.matrix_cond[0]):
+            for x in range(min_x, max_x + 1):
+                for y in range(min_y, max_y + 1):
+                    if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
+                        if self.matrix_cond[x][y] == 0:
+                            if self.Counter_Islands(0, x, y) >= self.need_size[0]:
+                                max_key = max(self.size_of_land)
+                                number_of_land = max_key + 1
+                                self.size_of_land[number_of_land] = self.FeelNewLand(number_of_land, x, y)
+                                return
+
+            min_x -= 1
+            max_x += 1
+            min_y -= 1
+            max_y += 1
+
+            min_x = max(0, min_x)
+            max_x = min(max_x, len(self.matrix_cond) - 1)
+            min_y = max(0, min_y)
+            max_y = min(max_y, len(self.matrix_cond[0]) - 1)
                     
     def FeelNewLand(self, number_of_land, x, y):
         stack_ = [(x, y)]
@@ -286,7 +305,7 @@ class OrderingIsland:
                     layers_x[x] = layers_x.get(x, 0) + 1 #If the key exists, it will return the value + 1, otherwise the default value is (0) + 1
                     layers_y[y] = layers_y.get(y, 0) + 1
 
-        key, value = next(iter(layers_x.items())) ####EMPTY LAYER_X
+        key, value = next(iter(layers_x.items()))
         min_x = [key, value]
         max_x = [key, value]
 
