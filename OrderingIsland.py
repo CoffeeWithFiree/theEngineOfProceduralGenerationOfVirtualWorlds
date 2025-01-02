@@ -128,7 +128,7 @@ class OrderingIsland:
 
     def Cut(self, number_of_land, centr, sides_x, sides_y):
         """cutting the island into 2 parts either by finding a bottleneck or in the center"""
-        average_layer = self.UniversalFirstSearch(number_of_land)
+        average_layer = self.UniversalFirstSearch(number_of_land, sides_x, sides_y)
         if average_layer != False:
             if average_layer[0] == "x":
                 for x in range((average_layer[1] - 1), (average_layer[1] + 1)):
@@ -168,25 +168,25 @@ class OrderingIsland:
 
         while self.size_of_land[number_of_land] > self.need_size[-1]:
             x = sides_x[0]
-            for y in range(sides_y[0], sides_y[1]):
+            for y in range(sides_y[0], sides_y[1] + 1):
                 self.CheckCurCellIsCurIsland(x, y, number_of_land)
                 if self.size_of_land[number_of_land] <= self.need_size[-1]:
                     return
 
             y = sides_y[0]
-            for x in range(sides_x[0], sides_x[1]):
+            for x in range(sides_x[0], sides_x[1] + 1):
                 self.CheckCurCellIsCurIsland(x, y, number_of_land)
                 if self.size_of_land[number_of_land] <= self.need_size[-1]:
                     return
 
             x = sides_x[1]
-            for y in range(sides_y[0], sides_y[1]):
+            for y in range(sides_y[0], sides_y[1] + 1):
                 self.CheckCurCellIsCurIsland(x, y, number_of_land)
                 if self.size_of_land[number_of_land] <= self.need_size[-1]:
                     return
 
             y = sides_y[1]
-            for x in range(sides_x[0], sides_x[1]):
+            for x in range(sides_x[0], sides_x[1] + 1):
                 self.CheckCurCellIsCurIsland(x, y, number_of_land)
                 if self.size_of_land[number_of_land] <= self.need_size[-1]:
                     return
@@ -295,12 +295,12 @@ class OrderingIsland:
         return counter
 
 
-    def UniversalFirstSearch(self, number_of_land):
+    def UniversalFirstSearch(self, number_of_land, sides_x, sides_y):
         """a graph-wide traversal algorithm in width and height"""
         layers_x = dict()
         layers_y = dict()
-        for x in range(len(self.matrix_cond)): ####MAYBE USE SIDES_X AND SIDES_Y?
-            for y in range(len(self.matrix_cond[x])):
+        for x in range(sides_x[0], sides_x[1] + 1):
+            for y in range(sides_y[0], sides_y[1] + 1):
                 if self.matrix_cond[x][y] == number_of_land:
                     layers_x[x] = layers_x.get(x, 0) + 1 #If the key exists, it will return the value + 1, otherwise the default value is (0) + 1
                     layers_y[y] = layers_y.get(y, 0) + 1
