@@ -47,22 +47,26 @@ class OrderingIsland:
                         signal_was_change = True
 
                     elif status_amount_of_lands == "less":
-                        self.Cut(key, centr, sides_x, sides_y) ###GOOD###
-                        self.amounts_lands += 1
-                        status_amount_of_lands = self.SetStatusAmount()
-                        del self.size_of_land[key]
-
-                        max_key = max(self.size_of_land)
-                        number_of_matrix = max_key + 1
-
-                        for x in range(len(self.matrix_cond)):
-                            for y in range(len(self.matrix_cond[x])):
-                                if self.matrix_cond[x][y] == key:
-                                    flood_feel = FloodFeelCounter(self.matrix, self.matrix_cond, x, y, number_of_matrix, self.np)
-                                    self.matrix_cond, self.size_of_land[number_of_matrix] = flood_feel.Feel()
-
-                                    number_of_matrix += 1
+                        self.ReducingSize(key, sides_x, sides_y)
+                        self.CreateNewIsland()
                         signal_was_change = True
+
+                        # self.Cut(key, centr, sides_x, sides_y) ###WORK INCORRECT###
+                        # self.amounts_lands += 1
+                        # status_amount_of_lands = self.SetStatusAmount()
+                        # del self.size_of_land[key]
+                        #
+                        # max_key = max(self.size_of_land)
+                        # number_of_matrix = max_key + 1
+                        #
+                        # for x in range(len(self.matrix_cond)):    ###Sides_x and Sides_y
+                        #     for y in range(len(self.matrix_cond[x])):
+                        #         if self.matrix_cond[x][y] == key:
+                        #             flood_feel = FloodFeelCounter(self.matrix, self.matrix_cond, x, y, number_of_matrix, self.np)
+                        #             self.matrix_cond, self.size_of_land[number_of_matrix] = flood_feel.Feel()
+                        #
+                        #             number_of_matrix += 1
+                        # signal_was_change = True
 
             if signal_was_change == False:
                 if status_amount_of_lands == "more":
@@ -125,43 +129,43 @@ class OrderingIsland:
                                         if self.size_of_land[number_of_land] >= self.need_size[0]:
                                             return False
 
-
-    def Cut(self, number_of_land, centr, sides_x, sides_y):
-        """cutting the island into 2 parts either by finding a bottleneck or in the center"""
-        average_layer = self.UniversalFirstSearch(number_of_land, sides_x, sides_y)
-        if average_layer != False:
-            if average_layer[0] == "x":
-                for x in range((average_layer[1] - 1), (average_layer[1] + 1)):
-                    for y in range(sides_y[0], sides_y[1] + 1):
-
-                        if self.matrix_cond[x][y] == number_of_land:
-                            self.matrix_cond[x][y] = 0
-                            self.matrix[x][0][y] = BiomesType.air_RL
-
-            elif average_layer[0] == "y":
-                for x in range(sides_x[0], sides_x[1] + 1):
-                    for y in range((average_layer[1] - 1), (average_layer[1] + 1)):
-
-                        if self.matrix_cond[x][y] == number_of_land:
-                            self.matrix_cond[x][y] = 0
-                            self.matrix[x][0][y] = BiomesType.air_RL
-
-        else:
-
-            if (sides_x[1] - sides_x[0]) >= (sides_y[1] - sides_y[0]):
-                for x in range((centr[0] - 1), (centr[0] + 1)):
-                    for y in range(sides_y[0], sides_y[1] + 1):
-
-                        if self.matrix_cond[x][y] == number_of_land:
-                            self.matrix_cond[x][y] = 0
-                            self.matrix[x][0][y] = BiomesType.air_RL
-            else:
-                for x in range(sides_x[0], sides_x[1] + 1):
-                    for y in range((centr[1] - 1), (centr[1] + 1)):
-
-                        if self.matrix_cond[x][y] == number_of_land:
-                            self.matrix_cond[x][y] = 0
-                            self.matrix[x][0][y] = BiomesType.air_RL
+    #WORK INCORRECT
+    # def Cut(self, number_of_land, centr, sides_x, sides_y):
+    #     """cutting the island into 2 parts either by finding a bottleneck or in the center"""
+    #     average_layer = self.UniversalFirstSearch(number_of_land, sides_x, sides_y)
+    #     if average_layer != False:
+    #         if average_layer[0] == "x":
+    #             for x in range((average_layer[1] - 1), (average_layer[1] + 1)):
+    #                 for y in range(sides_y[0], sides_y[1] + 1):
+    #
+    #                     if self.matrix_cond[x][y] == number_of_land:
+    #                         self.matrix_cond[x][y] = 0
+    #                         self.matrix[x][0][y] = BiomesType.air_RL
+    #
+    #         elif average_layer[0] == "y":
+    #             for x in range(sides_x[0], sides_x[1] + 1):
+    #                 for y in range((average_layer[1] - 1), (average_layer[1] + 1)):
+    #
+    #                     if self.matrix_cond[x][y] == number_of_land:
+    #                         self.matrix_cond[x][y] = 0
+    #                         self.matrix[x][0][y] = BiomesType.air_RL
+    #
+    #     else:
+    #
+    #         if (sides_x[1] - sides_x[0]) >= (sides_y[1] - sides_y[0]):
+    #             for x in range((centr[0] - 1), (centr[0] + 1)):
+    #                 for y in range(sides_y[0], sides_y[1] + 1):
+    #
+    #                     if self.matrix_cond[x][y] == number_of_land:
+    #                         self.matrix_cond[x][y] = 0
+    #                         self.matrix[x][0][y] = BiomesType.air_RL
+    #         else:
+    #             for x in range(sides_x[0], sides_x[1] + 1):
+    #                 for y in range((centr[1] - 1), (centr[1] + 1)):
+    #
+    #                     if self.matrix_cond[x][y] == number_of_land:
+    #                         self.matrix_cond[x][y] = 0
+    #                         self.matrix[x][0][y] = BiomesType.air_RL
 
     def ReducingSize(self, number_of_land, sides_x, sides_y):
         """reduces the size of too large islands"""
@@ -295,46 +299,46 @@ class OrderingIsland:
         return counter
 
 
-    def UniversalFirstSearch(self, number_of_land, sides_x, sides_y):
-        """a graph-wide traversal algorithm in width and height"""
-        layers_x = dict()
-        layers_y = dict()
-        for x in range(sides_x[0], sides_x[1] + 1):
-            for y in range(sides_y[0], sides_y[1] + 1):
-                if self.matrix_cond[x][y] == number_of_land:
-                    layers_x[x] = layers_x.get(x, 0) + 1 #If the key exists, it will return the value + 1, otherwise the default value is (0) + 1
-                    layers_y[y] = layers_y.get(y, 0) + 1
-
-        key, value = next(iter(layers_x.items()))
-        min_x = [key, value]
-        max_x = [key, value]
-
-        key, value = next(iter(layers_y.items()))
-        min_y = [key, value]
-        max_y = [key, value]
-
-        for key, value in layers_x.items():
-            if value > max_x[1]:
-                max_x = [key, value]
-            if value < min_x[1]:
-                min_x = [key, value]
-
-        for key, value in layers_y.items():
-            if value > max_y[1]:
-                max_y = [key, value]
-            if value < min_y[1]:
-                min_y = [key, value]
-
-        choice = "x" if (max_x[1] - min_x[1]) >= (max_y[1] - min_y[1]) else "y"
-
-        average_layer = []
-        if choice == "x":
-            if min_x[1] * 2 <= max_x[1]:
-                average_layer = ["x", min_x[1]]
-        else:
-            if min_y[1] * 2 <= max_y[1]:
-                average_layer = ["y", min_y[1]]
-        return False if bool(average_layer) == False else average_layer
+    # def UniversalFirstSearch(self, number_of_land, sides_x, sides_y):
+    #     """a graph-wide traversal algorithm in width and height"""
+    #     layers_x = dict()
+    #     layers_y = dict()
+    #     for x in range(sides_x[0], sides_x[1] + 1):
+    #         for y in range(sides_y[0], sides_y[1] + 1):
+    #             if self.matrix_cond[x][y] == number_of_land:
+    #                 layers_x[x] = layers_x.get(x, 0) + 1 #If the key exists, it will return the value + 1, otherwise the default value is (0) + 1
+    #                 layers_y[y] = layers_y.get(y, 0) + 1
+    #
+    #     key, value = next(iter(layers_x.items()))
+    #     min_x = [key, value]
+    #     max_x = [key, value]
+    #
+    #     key, value = next(iter(layers_y.items()))
+    #     min_y = [key, value]
+    #     max_y = [key, value]
+    #
+    #     for key, value in layers_x.items():
+    #         if value > max_x[1]:
+    #             max_x = [key, value]
+    #         if value < min_x[1]:
+    #             min_x = [key, value]
+    #
+    #     for key, value in layers_y.items():
+    #         if value > max_y[1]:
+    #             max_y = [key, value]
+    #         if value < min_y[1]:
+    #             min_y = [key, value]
+    #
+    #     choice = "x" if (max_x[1] - min_x[1]) >= (max_y[1] - min_y[1]) else "y"
+    #
+    #     average_layer = []
+    #     if choice == "x":
+    #         if min_x[1] * 2 <= max_x[1]:
+    #             average_layer = ["x", min_x[1]]
+    #     else:
+    #         if min_y[1] * 2 <= max_y[1]:
+    #             average_layer = ["y", min_y[1]]
+    #     return False if bool(average_layer) == False else average_layer
 
     def SearchingIslandGeometricCenterAndBorders(self, number_of_land):
         """search for the geometric central cell of the island and borders"""
@@ -457,24 +461,28 @@ class OrderingIsland:
                             if self.matrix_cond[x - 1][y - 1] != 0 and self.matrix_cond[x - 1][y - 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x - 1][y - 1])
                                 self.matrix_cond[x - 1][y - 1] = 0
+                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
                         # [x + 1][y - 1]
                         if (x + 1) <= (settings.columns - 1) and (y - 1) >= 0:
                             if self.matrix_cond[x + 1][y - 1] != 0 and self.matrix_cond[x + 1][y - 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x + 1][y - 1])
                                 self.matrix_cond[x + 1][y - 1] = 0
+                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
                         # [x - 1][y + 1]
                         if (x - 1) >= 0 and (y + 1 <= (settings.rows - 1)):
                             if self.matrix_cond[x - 1][y + 1] != 0 and self.matrix_cond[x - 1][y + 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x - 1][y + 1])
                                 self.matrix_cond[x - 1][y + 1] = 0
+                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
                         # [x + 1][y + 1]
                         if ((x + 1) <= (settings.columns - 1)) and (y + 1 <= (settings.rows - 1)):
                             if self.matrix_cond[x + 1][y + 1] != 0 and self.matrix_cond[x + 1][y + 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x + 1][y + 1])
                                 self.matrix_cond[x + 1][y + 1] = 0
+                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
     def CheckZeroIsland(self, number_of_land):
         """Checking that the island is no more"""
