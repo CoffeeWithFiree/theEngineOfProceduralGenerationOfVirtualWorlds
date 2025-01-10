@@ -3,6 +3,7 @@ from BiomesType import BiomesType
 import random
 from FloodFeelCounter import FloodFeelCounter
 from OrderingIsland import OrderingIsland
+import pandas as pd
 
 class RoguelikeKA:
     def __init__(self, main, pg, np, graphic3D):
@@ -19,16 +20,13 @@ class RoguelikeKA:
             self.NextGenerationLands()
 
         #Every Land ~18-23 cells, 9-13 lands
-        self.matrix_cond, self.size_of_land, self.amounts_lands = self.CounterLand()
+
+        #2 iterations of island ordering
+        for i in range(2):
+            self.OrdIsland()
+            self.ExportMatricesToExcel(f"matrix{i}.xlsx", f"matrix_cond{i}.xlsx")
 
 
-
-        ord_island = OrderingIsland(self.matrix, self.matrix_cond, self.size_of_land, self.amounts_lands, self.np)
-
-        self.matrix = ord_island.matrix
-        self.matrix_cond = ord_island.matrix_cond
-        self.size_of_land = ord_island.size_of_land
-        self.amounts_lands = ord_island.amounts_lands
 
         print(f"amount of lands = {self.amounts_lands}")
         print(f"size of lands = {self.size_of_land}")
@@ -192,3 +190,24 @@ class RoguelikeKA:
                     matrix_cond, size_of_land[number_of_matrix] = flood_feel.Feel()
                     number_of_matrix += 1
         return matrix_cond, size_of_land, number_of_matrix - 1
+
+    def OrdIsland(self):
+        """the function that causes the islands to be ordered"""
+        self.matrix_cond, self.size_of_land, self.amounts_lands = self.CounterLand()
+
+        ord_island = OrderingIsland(self.matrix, self.matrix_cond, self.size_of_land, self.amounts_lands, self.np)
+
+        self.matrix = ord_island.matrix
+        self.matrix_cond = ord_island.matrix_cond
+        self.size_of_land = ord_island.size_of_land
+        self.amounts_lands = ord_island.amounts_lands
+
+    def ExportMatricesToExcel(self, matrix_filename = "matrix.xlsx", cond_filename = "matrix_cond.xlsx"):
+        """a function that exports 2 matrices (self.matrix and self.matrix_cond) to excel"""
+        matrix_lower_layer = [[self.matrix[x][0][y] for y in range(len(self.matrix[x][0]))] for x in range(len(self.matrix))]
+
+        df_matrix = pd.DataFrame(matrix_lower_layer)
+        df_matrix_cond = pd.DataFrame(self.matrix_cond)
+
+        df_matrix.to_excel(matrix_filename, index = False, header = False)
+        df_matrix_cond.to_excel(cond_filename, index = False, header = False)
