@@ -246,7 +246,7 @@ class OrderingIsland:
 
         while stack_:
             r, c = stack_.pop(0)
-            if self.matrix_cond[r][c] == 0:
+            if self.matrix_cond[r][c] == 0 and (self.Check4CellsAround(number_of_land, r, c) or counter == 0):
                 if self.CheckAround(r, c, number_of_land):
                     self.matrix_cond[r][c] = number_of_land
                     self.matrix[r][0][c] = BiomesType.land_RL
@@ -274,6 +274,30 @@ class OrderingIsland:
 
         return counter
 
+    def Check4CellsAround(self, number_of_land, x, y):
+        """checking that the lower, upper, right or left cell is part of the island"""
+        # [x][y - 1]
+        if (y - 1) >= 0:
+            if self.matrix_cond[x][y - 1] == number_of_land:
+                return True
+
+        # [x - 1][y]
+        if (x - 1) >= 0:
+            if self.matrix_cond[x - 1][y] == number_of_land:
+                return True
+
+        # [x + 1][y]
+        if (x + 1) <= (settings.columns - 1):
+            if self.matrix_cond[x + 1][y] == number_of_land:
+                return True
+
+        # [x][y + 1]
+        if (y + 1 <= (settings.rows - 1)):
+            if self.matrix_cond[x][y + 1] == number_of_land:
+                return True
+
+        return False
+
     def Counter_Islands(self, number_of_land, x, y):
         """Counts the number of cells of an island or a void"""
         stack_ = [(x, y)]
@@ -282,7 +306,7 @@ class OrderingIsland:
         while stack_:
 
             r, c = stack_.pop()
-            if self.matrix_cond[r][c] == number_of_land and help_matrix[r][c] == 0:
+            if self.matrix_cond[r][c] == number_of_land and help_matrix[r][c] == 0 and self.Check4CellsAround(number_of_land, r, c):
                 if self.CheckAround(r, c, number_of_land):
                     help_matrix[r][c] = 1
                     counter += 1
