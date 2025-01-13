@@ -87,6 +87,9 @@ class OrderingIsland:
                     self.amounts_lands += 1
                     status_amount_of_lands = self.SetStatusAmount()
 
+        for x in range(len(self.matrix_cond)):
+            for y in range(len(self.matrix_cond[x])):
+                self.matrix[x][0][y] = BiomesType.air_RL if (self.matrix_cond[x][y] == 0) else BiomesType.land_RL
 
 
     def SetStatusAmount(self):
@@ -104,7 +107,6 @@ class OrderingIsland:
             for j in range(sides_y[0], sides_y[1] + 1):
                 if self.matrix_cond[i][j] == number_of_land:
                     self.matrix_cond[i][j] = 0
-                    self.matrix[i][0][j] = BiomesType.air_RL
 
     def Expansion(self, number_of_land, sides_x, sides_y):
         """The expansion of too small islands"""
@@ -124,7 +126,6 @@ class OrderingIsland:
 
                                     if self.CheckAround(k[0], k[1], number_of_land):
                                         self.matrix_cond[k[0]][k[1]] = number_of_land
-                                        self.matrix[k[0]][0][k[1]] = BiomesType.land_RL
                                         self.size_of_land[number_of_land] = self.size_of_land[number_of_land] + 1
                                         if self.size_of_land[number_of_land] >= self.need_size[0]:
                                             return False
@@ -204,7 +205,6 @@ class OrderingIsland:
         """a function that verifies that the current cell is the current island"""
         if self.matrix_cond[x][y] == number_of_land:
             self.matrix_cond[x][y] = 0
-            self.matrix[x][0][y] = BiomesType.air_RL
             self.size_of_land[number_of_land] -= 1
 
 
@@ -249,7 +249,6 @@ class OrderingIsland:
             if self.matrix_cond[r][c] == 0 and (self.Check4CellsAround(number_of_land, r, c) or counter == 0):
                 if self.CheckAround(r, c, number_of_land):
                     self.matrix_cond[r][c] = number_of_land
-                    self.matrix[r][0][c] = BiomesType.land_RL
                     counter += 1
 
                     if counter >= self.need_size[0]:
@@ -485,28 +484,24 @@ class OrderingIsland:
                             if self.matrix_cond[x - 1][y - 1] != 0 and self.matrix_cond[x - 1][y - 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x - 1][y - 1])
                                 self.matrix_cond[x - 1][y - 1] = 0
-                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
                         # [x + 1][y - 1]
                         if (x + 1) <= (settings.columns - 1) and (y - 1) >= 0:
                             if self.matrix_cond[x + 1][y - 1] != 0 and self.matrix_cond[x + 1][y - 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x + 1][y - 1])
                                 self.matrix_cond[x + 1][y - 1] = 0
-                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
                         # [x - 1][y + 1]
                         if (x - 1) >= 0 and (y + 1 <= (settings.rows - 1)):
                             if self.matrix_cond[x - 1][y + 1] != 0 and self.matrix_cond[x - 1][y + 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x - 1][y + 1])
                                 self.matrix_cond[x - 1][y + 1] = 0
-                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
                         # [x + 1][y + 1]
                         if ((x + 1) <= (settings.columns - 1)) and (y + 1 <= (settings.rows - 1)):
                             if self.matrix_cond[x + 1][y + 1] != 0 and self.matrix_cond[x + 1][y + 1] != self.matrix_cond[x][y]:
                                 self.CheckZeroIsland(self.matrix_cond[x + 1][y + 1])
                                 self.matrix_cond[x + 1][y + 1] = 0
-                                self.matrix[x - 1][0][y - 1] = BiomesType.air_RL
 
     def CheckZeroIsland(self, number_of_land):
         """Checking that the island is no more"""
