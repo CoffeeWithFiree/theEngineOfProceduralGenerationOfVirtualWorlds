@@ -258,7 +258,7 @@ class OrderingIsland:
                     min_x, max_x = min(min_x, r), max(max_x, r)
                     min_y, max_y = min(min_y, c), max(max_y, c)
 
-                    for nx in range(min_x, max_x + 2):
+                    for nx in range(min_x, max_x + 1):
                         if 0 <= nx < len(self.matrix_cond):
                             if min_y - 1 >= 0 and (nx, min_y - 1) not in was_check:
                                 stack_.append((nx, min_y - 1))
@@ -267,7 +267,7 @@ class OrderingIsland:
                                 stack_.append((nx, max_y + 1))
                                 was_check.append((nx, max_y + 1))
 
-                    for ny in range(min_y, max_y + 2):
+                    for ny in range(min_y, max_y + 1):
                         if 0 <= ny < len(self.matrix_cond[0]):
                             if min_x - 1 >= 0 and (min_x - 1, ny) not in was_check:
                                 stack_.append((min_x - 1, ny))
