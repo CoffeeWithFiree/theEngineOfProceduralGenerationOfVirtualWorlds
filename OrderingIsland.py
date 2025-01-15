@@ -240,6 +240,7 @@ class OrderingIsland:
     def FeelNewLand(self, number_of_land, x, y):
         stack_ = [(x, y)]
         counter = 0
+        was_check = []
 
         min_x, max_x = x, x
         min_y, max_y = y, y
@@ -259,17 +260,21 @@ class OrderingIsland:
 
                     for nx in range(min_x, max_x + 2):
                         if 0 <= nx < len(self.matrix_cond):
-                            if min_y - 1 >= 0:
+                            if min_y - 1 >= 0 and (nx, min_y - 1) not in was_check:
                                 stack_.append((nx, min_y - 1))
-                            if max_y + 1 < len(self.matrix_cond[x]):
+                                was_check.append((nx, min_y - 1))
+                            if max_y + 1 < len(self.matrix_cond[x]) and (nx, max_y + 1) not in was_check:
                                 stack_.append((nx, max_y + 1))
+                                was_check.append((nx, max_y + 1))
 
                     for ny in range(min_y, max_y + 2):
                         if 0 <= ny < len(self.matrix_cond[0]):
-                            if min_x - 1 >= 0:
+                            if min_x - 1 >= 0 and (min_x - 1, ny) not in was_check:
                                 stack_.append((min_x - 1, ny))
-                            if max_x + 1 < len(self.matrix_cond):
+                                was_check.append((min_x - 1, ny))
+                            if max_x + 1 < len(self.matrix_cond) and (max_x + 1, ny) not in was_check:
                                 stack_.append((max_x + 1, ny))
+                                was_check.append((max_x + 1, ny))
 
         return counter
 
