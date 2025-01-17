@@ -238,9 +238,10 @@ class OrderingIsland:
             max_y = min(max_y, len(self.matrix_cond[0]) - 1)
                     
     def FeelNewLand(self, number_of_land, x, y):
+        """function to fill a new land area"""
         stack_ = [(x, y)]
         counter = 0
-        was_check = []
+        was_check = set() #set to fast sears
 
         min_x, max_x = x, x
         min_y, max_y = y, y
@@ -258,23 +259,36 @@ class OrderingIsland:
                     min_x, max_x = min(min_x, r), max(max_x, r)
                     min_y, max_y = min(min_y, c), max(max_y, c)
 
-                    for nx in range(min_x, max_x + 1):
-                        if 0 <= nx < len(self.matrix_cond):
-                            if min_y - 1 >= 0 and (nx, min_y - 1) not in was_check:
-                                stack_.append((nx, min_y - 1))
-                                was_check.append((nx, min_y - 1))
-                            if max_y + 1 < len(self.matrix_cond[x]) and (nx, max_y + 1) not in was_check:
-                                stack_.append((nx, max_y + 1))
-                                was_check.append((nx, max_y + 1))
+                    for nx in [min_x, max_x]:
+                        for ny in range(min_y - 1, max_y + 2):
+                            if 0 <= nx <= len(self.matrix_cond) and 0 <= ny <= len(self.matrix_cond[0]) and (nx, ny) not in was_check:
+                                stack_.append((nx, ny))
+                                was_check.add((nx, ny))
 
-                    for ny in range(min_y, max_y + 1):
-                        if 0 <= ny < len(self.matrix_cond[0]):
-                            if min_x - 1 >= 0 and (min_x - 1, ny) not in was_check:
-                                stack_.append((min_x - 1, ny))
-                                was_check.append((min_x - 1, ny))
-                            if max_x + 1 < len(self.matrix_cond) and (max_x + 1, ny) not in was_check:
-                                stack_.append((max_x + 1, ny))
-                                was_check.append((max_x + 1, ny))
+                    for ny in [min_y, max_y]:
+                        for nx in range(min_x - 1, max_x + 2):
+                            if 0 <= nx <= len(self.matrix_cond) and 0 <= ny <= len(self.matrix_cond[0]) and (nx, ny) not in was_check:
+                                stack_.append((nx, ny))
+                                was_check.add((nx, ny))
+
+
+                    # for nx in range(min_x, max_x + 1):
+                    #     if 0 <= nx < len(self.matrix_cond):
+                    #         if min_y - 1 >= 0 and (nx, min_y - 1) not in was_check:
+                    #             stack_.append((nx, min_y - 1))
+                    #             was_check.append((nx, min_y - 1))
+                    #         if max_y + 1 < len(self.matrix_cond[x]) and (nx, max_y + 1) not in was_check:
+                    #             stack_.append((nx, max_y + 1))
+                    #             was_check.append((nx, max_y + 1))
+                    #
+                    # for ny in range(min_y, max_y + 1):
+                    #     if 0 <= ny < len(self.matrix_cond[0]):
+                    #         if min_x - 1 >= 0 and (min_x - 1, ny) not in was_check:
+                    #             stack_.append((min_x - 1, ny))
+                    #             was_check.append((min_x - 1, ny))
+                    #         if max_x + 1 < len(self.matrix_cond) and (max_x + 1, ny) not in was_check:
+                    #             stack_.append((max_x + 1, ny))
+                    #             was_check.append((max_x + 1, ny))
 
         return counter
 
