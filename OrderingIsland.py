@@ -47,26 +47,49 @@ class OrderingIsland:
                         signal_was_change = True
 
                     elif status_amount_of_lands == "less":
-                        self.ReducingSize(key, sides_x, sides_y)
-                        self.CreateNewIsland()
-                        signal_was_change = True
-
-                        # self.Cut(key, centr, sides_x, sides_y) ###WORK INCORRECT###
-                        # self.amounts_lands += 1
-                        # status_amount_of_lands = self.SetStatusAmount()
-                        # del self.size_of_land[key]
-                        #
-                        # max_key = max(self.size_of_land)
-                        # number_of_matrix = max_key + 1
-                        #
-                        # for x in range(len(self.matrix_cond)):    ###Sides_x and Sides_y
-                        #     for y in range(len(self.matrix_cond[x])):
-                        #         if self.matrix_cond[x][y] == key:
-                        #             flood_feel = FloodFeelCounter(self.matrix, self.matrix_cond, x, y, number_of_matrix, self.np)
-                        #             self.matrix_cond, self.size_of_land[number_of_matrix] = flood_feel.Feel()
-                        #
-                        #             number_of_matrix += 1
+                        # self.ReducingSize(key, sides_x, sides_y)
+                        # self.CreateNewIsland()
                         # signal_was_change = True
+
+                        self.Cut(key, centr, sides_x, sides_y) ####GOOD####
+
+                        max_key = max(self.size_of_land)
+                        number_of_matrix = max_key + 1
+                        new_size = dict()
+
+                        for x in range(sides_x[0], sides_x[1] + 1):
+                            for y in range(sides_y[0], sides_y[1] + 1):
+                                if self.matrix_cond[x][y] == key:
+                                    self.size_of_land[number_of_matrix] = self.FeelForCut(x, y, key, number_of_matrix)
+                                    new_size[number_of_matrix] = size_of_land[number_of_matrix]
+                                    number_of_matrix += 1
+                        sorted_new_isl = sorted(new_size.items(), key=lambda item: item[1], reverse=True) ####ДО ЭТОГО ЭТАПА ВСЕ ХОРОШО
+                        ###Removing unnecessary islands
+                        if len(new_size) > 2:
+                            less_islands = sorted_new_isl[2:]
+                            for i, _ in less_islands:
+                                self.DeleteIsland(i, sides_x, sides_y)
+                                del self.size_of_land[i]
+                        ###
+
+                        self.amounts_lands += 1
+                        status_amount_of_lands = self.SetStatusAmount()
+                        del self.size_of_land[key]
+
+                        ###Bringing the islands to a suitable size
+                        bigger_island = sorted_new_isl[:2]
+                        for i, _ in bigger_island:
+                            centr, sides_x, sides_y = self.SearchingIslandGeometricCenterAndBorders(i)
+                            if self.size_of_land[i] > self.need_size[1]:
+                                self.ReducingSize(i, sides_x, sides_y)
+                            elif self.size_of_land[i] < self.need_size[0]:
+                                if self.Expansion(i, sides_x,sides_y):
+                                    self.DeleteIsland(key, sides_x, sides_y)
+                                    del self.size_of_land[key]
+                                    self.CreateNewIsland()
+                        ###
+
+                        signal_was_change = True
 
             if signal_was_change == False:
                 if status_amount_of_lands == "more":
@@ -131,42 +154,44 @@ class OrderingIsland:
                                             return False
 
     #WORK INCORRECT
-    # def Cut(self, number_of_land, centr, sides_x, sides_y):
-    #     """cutting the island into 2 parts either by finding a bottleneck or in the center"""
-    #     average_layer = self.UniversalFirstSearch(number_of_land, sides_x, sides_y)
-    #     if average_layer != False:
-    #         if average_layer[0] == "x":
-    #             for x in range((average_layer[1] - 1), (average_layer[1] + 1)):
-    #                 for y in range(sides_y[0], sides_y[1] + 1):
-    #
-    #                     if self.matrix_cond[x][y] == number_of_land:
-    #                         self.matrix_cond[x][y] = 0
-    #                         self.matrix[x][0][y] = BiomesType.air_RL
-    #
-    #         elif average_layer[0] == "y":
-    #             for x in range(sides_x[0], sides_x[1] + 1):
-    #                 for y in range((average_layer[1] - 1), (average_layer[1] + 1)):
-    #
-    #                     if self.matrix_cond[x][y] == number_of_land:
-    #                         self.matrix_cond[x][y] = 0
-    #                         self.matrix[x][0][y] = BiomesType.air_RL
-    #
-    #     else:
-    #
-    #         if (sides_x[1] - sides_x[0]) >= (sides_y[1] - sides_y[0]):
-    #             for x in range((centr[0] - 1), (centr[0] + 1)):
-    #                 for y in range(sides_y[0], sides_y[1] + 1):
-    #
-    #                     if self.matrix_cond[x][y] == number_of_land:
-    #                         self.matrix_cond[x][y] = 0
-    #                         self.matrix[x][0][y] = BiomesType.air_RL
-    #         else:
-    #             for x in range(sides_x[0], sides_x[1] + 1):
-    #                 for y in range((centr[1] - 1), (centr[1] + 1)):
-    #
-    #                     if self.matrix_cond[x][y] == number_of_land:
-    #                         self.matrix_cond[x][y] = 0
-    #                         self.matrix[x][0][y] = BiomesType.air_RL
+    def Cut(self, number_of_land, centr, sides_x, sides_y):
+        """cutting the island into 2 parts either by finding a bottleneck or in the center"""
+        if (sides_x[1] - sides_x[0]) >= (sides_y[1] - sides_y[0]):
+            for x in range((centr[0]), (centr[0] + 2)):
+                for y in range(sides_y[0], sides_y[1] + 1):
+
+                    if self.matrix_cond[x][y] == number_of_land:
+                        self.matrix_cond[x][y] = 0
+        else:
+            for x in range(sides_x[0], sides_x[1] + 1):
+                for y in range((centr[1]), (centr[1] + 2)):
+
+                    if self.matrix_cond[x][y] == number_of_land:
+                        self.matrix_cond[x][y] = 0
+
+    def FeelForCut(self, x, y, num_old, num_new):
+        """Flood feel, replacing one island index with another"""
+        stack_ = [(x, y)]
+        counter = 0
+        while stack_:
+
+            r, c = stack_.pop()
+            if self.matrix_cond[r][c] == num_old:
+                self.matrix_cond[r][c] = num_new
+                counter += 1
+
+                if r + 1 < len(self.matrix_cond):
+                    stack_.append((r + 1, c))
+                if r - 1 >= 0:
+                    stack_.append((r - 1, c))
+                if c + 1 < len(self.matrix_cond[0]):
+                    stack_.append((r, c + 1))
+                if c - 1 >= 0:
+                    stack_.append((r, c - 1))
+
+        return counter
+
+
 
     def ReducingSize(self, number_of_land, sides_x, sides_y):
         """reduces the size of too large islands"""
@@ -261,34 +286,15 @@ class OrderingIsland:
 
                     for nx in [min_x, max_x]:
                         for ny in range(min_y - 1, max_y + 2):
-                            if 0 <= nx <= len(self.matrix_cond) and 0 <= ny <= len(self.matrix_cond[0]) and (nx, ny) not in was_check:
+                            if 0 <= nx < len(self.matrix_cond) and 0 <= ny < len(self.matrix_cond[0]) and (nx, ny) not in was_check:
                                 stack_.append((nx, ny))
                                 was_check.add((nx, ny))
 
                     for ny in [min_y, max_y]:
                         for nx in range(min_x - 1, max_x + 2):
-                            if 0 <= nx <= len(self.matrix_cond) and 0 <= ny <= len(self.matrix_cond[0]) and (nx, ny) not in was_check:
+                            if 0 <= nx < len(self.matrix_cond) and 0 <= ny < len(self.matrix_cond[0]) and (nx, ny) not in was_check:
                                 stack_.append((nx, ny))
                                 was_check.add((nx, ny))
-
-
-                    # for nx in range(min_x, max_x + 1):
-                    #     if 0 <= nx < len(self.matrix_cond):
-                    #         if min_y - 1 >= 0 and (nx, min_y - 1) not in was_check:
-                    #             stack_.append((nx, min_y - 1))
-                    #             was_check.append((nx, min_y - 1))
-                    #         if max_y + 1 < len(self.matrix_cond[x]) and (nx, max_y + 1) not in was_check:
-                    #             stack_.append((nx, max_y + 1))
-                    #             was_check.append((nx, max_y + 1))
-                    #
-                    # for ny in range(min_y, max_y + 1):
-                    #     if 0 <= ny < len(self.matrix_cond[0]):
-                    #         if min_x - 1 >= 0 and (min_x - 1, ny) not in was_check:
-                    #             stack_.append((min_x - 1, ny))
-                    #             was_check.append((min_x - 1, ny))
-                    #         if max_x + 1 < len(self.matrix_cond) and (max_x + 1, ny) not in was_check:
-                    #             stack_.append((max_x + 1, ny))
-                    #             was_check.append((max_x + 1, ny))
 
         return counter
 
