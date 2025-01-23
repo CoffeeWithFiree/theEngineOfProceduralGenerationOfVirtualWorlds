@@ -150,10 +150,11 @@ class OrderingIsland:
                                 for k in empty_islands:
 
                                     if self.CheckAround(k[0], k[1], number_of_land):
-                                        self.matrix_cond[k[0]][k[1]] = number_of_land
-                                        self.size_of_land[number_of_land] = self.size_of_land[number_of_land] + 1
-                                        if self.size_of_land[number_of_land] >= self.need_size[0]:
-                                            return False
+                                        if self.Check4CellsAround(number_of_land, k[0], k[1]):
+                                            self.matrix_cond[k[0]][k[1]] = number_of_land
+                                            self.size_of_land[number_of_land] = self.size_of_land[number_of_land] + 1
+                                            if self.size_of_land[number_of_land] >= self.need_size[0]:
+                                                return False
 
     def Cut(self, number_of_land, centr, sides_x, sides_y):
         """cutting the island into 2 parts either by finding a bottleneck or in the center"""
