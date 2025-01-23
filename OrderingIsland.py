@@ -91,20 +91,26 @@ class OrderingIsland:
                 if status_amount_of_lands == "more":
                     key, value = next(iter(self.size_of_land.items()))
                     min = [key, value]
-                    for key, value in self.size_of_land.items():
-                        if value < min[1]:
-                            min = [key, value]
+                    while status_amount_of_lands != "equel":
+                        for key, value in self.size_of_land.items():
+                            if value < min[1]:
+                                min = [key, value]
 
-                    centr, sides_x, sides_y = self.SearchingIslandGeometricCenterAndBorders(key)
-                    self.DeleteIsland(min[0], sides_x, sides_y)
-                    del self.size_of_land[min[0]]
-                    self.amounts_lands = self.amounts_lands - 1
-                    status_amount_of_lands = self.SetStatusAmount()
+                        centr, sides_x, sides_y = self.SearchingIslandGeometricCenterAndBorders(min[0])
+                        self.DeleteIsland(min[0], sides_x, sides_y)
+                        del self.size_of_land[min[0]]
+                        self.amounts_lands = self.amounts_lands - 1
+                        status_amount_of_lands = self.SetStatusAmount()
+                        if status_amount_of_lands == "equel":
+                            break
 
                 elif status_amount_of_lands == "less":
-                    self.CreateNewIsland()
-                    self.amounts_lands += 1
-                    status_amount_of_lands = self.SetStatusAmount()
+                    while status_amount_of_lands != "equel":
+                        self.CreateNewIsland()
+                        self.amounts_lands += 1
+                        status_amount_of_lands = self.SetStatusAmount()
+                        if status_amount_of_lands == "equel":
+                            break
 
         for x in range(len(self.matrix_cond)):
             for y in range(len(self.matrix_cond[x])):
