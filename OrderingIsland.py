@@ -157,7 +157,7 @@ class OrderingIsland:
                                                 return False
 
     def Cut(self, number_of_land, centr, sides_x, sides_y):
-        """cutting the island into 2 parts either by finding a bottleneck or in the center"""
+        """cutting the island into 2 parts in the center"""
         if (sides_x[1] - sides_x[0]) >= (sides_y[1] - sides_y[0]):
             for x in range((centr[0]), (centr[0] + 2)):
                 for y in range(sides_y[0], sides_y[1] + 1):
@@ -244,15 +244,26 @@ class OrderingIsland:
         min_y, max_y = start_y, start_y
 
         while min_x >= 0 or max_x < len(self.matrix_cond) or min_y >= 0 or max_y < len(self.matrix_cond[0]):
+
+            x =  min_x
+            for y in range(min_y, max_y + 1):
+                if self.CreateNewLandHelper(x, y):
+                    return
+
+            x = max_x
+            for y in range(min_y, max_y + 1):
+                if self.CreateNewLandHelper(x, y):
+                    return
+
+            y = min_y
             for x in range(min_x, max_x + 1):
-                for y in range(min_y, max_y + 1):
-                    if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
-                        if self.matrix_cond[x][y] == 0:
-                            if self.Counter_Islands(0, x, y) >= self.need_size[0]:
-                                max_key = max(self.size_of_land)
-                                number_of_land = max_key + 1
-                                self.size_of_land[number_of_land] = self.FeelNewLand(number_of_land, x, y)
-                                return
+                if self.CreateNewLandHelper(x, y):
+                    return
+
+            y = max_y
+            for x in range(min_x, max_x + 1):
+                if self.CreateNewLandHelper(x, y):
+                    return
 
             min_x -= 1
             max_x += 1
@@ -263,7 +274,18 @@ class OrderingIsland:
             max_x = min(max_x, len(self.matrix_cond) - 1)
             min_y = max(0, min_y)
             max_y = min(max_y, len(self.matrix_cond[0]) - 1)
-                    
+
+    def CreateNewLandHelper(self, x, y):
+        if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
+            if self.matrix_cond[x][y] == 0:
+                if self.Counter_Islands(0, x, y) >= self.need_size[0]:
+                    max_key = max(self.size_of_land)
+                    number_of_land = max_key + 1
+                    self.size_of_land[number_of_land] = self.FeelNewLand(number_of_land, x, y)
+                    return True
+        return False
+
+
     def FeelNewLand(self, number_of_land, x, y):
         """function to fill a new land area"""
         stack_ = [(x, y)]
