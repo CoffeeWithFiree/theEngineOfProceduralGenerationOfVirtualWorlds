@@ -3,6 +3,7 @@ from BiomesType import BiomesType
 import random
 from FloodFeelCounter import FloodFeelCounter
 from OrderingIsland import OrderingIsland
+from PostProcessingAfterOrdering import PostProcessingAfterOrdering
 import pandas as pd
 
 class RoguelikeKA:
@@ -24,18 +25,26 @@ class RoguelikeKA:
         #2 iterations of island ordering
         for i in range(2):
             self.OrdIsland()
-            self.ExportMatricesToExcel(f"matrix{i}.xlsx", f"matrix_cond{i}.xlsx")
+            # self.ExportMatricesToExcel(f"matrix{i}.xlsx", f"matrix_cond{i}.xlsx")
 
+        #Post-Processing after Ordering
+        self.matrix_cond, self.size_of_land, self.amounts_lands = self.CounterLand()
+        post_proc = PostProcessingAfterOrdering(self.matrix, self.matrix_cond, self.size_of_land,self.amounts_lands, self.np)
 
+        self.matrix = post_proc.matrix
+        self.matrix_cond = post_proc.matrix_cond
+        self.size_of_land = post_proc.size_of_land
+        self.amounts_lands = post_proc.amounts_lands
 
-        print(f"amount of lands = {self.amounts_lands}")
-        print(f"size of lands = {self.size_of_land}")
-        print(f"matrix_cond =")
-        for i in self.matrix_cond:
-            print(i)
+        self.ExportMatricesToExcel(f"matrix{2}.xlsx", f"matrix_cond{2}.xlsx")
 
-
-        print("Matrix was create")
+        # print(f"amount of lands = {self.amounts_lands}")
+        # print(f"size of lands = {self.size_of_land}")
+        # print(f"matrix_cond =")
+        # for i in self.matrix_cond:
+        #     print(i)
+        #
+        # print("Matrix was create")
 
     def CreateStartMatrix(self):
         Res_x = settings.width_RL  # Right
