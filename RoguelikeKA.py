@@ -4,7 +4,8 @@ import random
 from FloodFeelCounter import FloodFeelCounter
 from OrderingIsland import OrderingIsland
 from PostProcessingAfterOrdering import PostProcessingAfterOrdering
-import pandas as pd
+from Tunneling import Tunneling
+from WriteExcel import WriteExcel
 
 class RoguelikeKA:
     def __init__(self, main, pg, np, graphic3D):
@@ -36,15 +37,12 @@ class RoguelikeKA:
         self.size_of_land = post_proc.size_of_land
         self.amounts_lands = post_proc.amounts_lands
 
-        self.ExportMatricesToExcel(f"matrix{2}.xlsx", f"matrix_cond{2}.xlsx")
+        with_tunnels = Tunneling(self.matrix, self.matrix_cond, self.size_of_land, self.amounts_lands, self.np)
 
-        # print(f"amount of lands = {self.amounts_lands}")
-        # print(f"size of lands = {self.size_of_land}")
-        # print(f"matrix_cond =")
-        # for i in self.matrix_cond:
-        #     print(i)
-        #
-        # print("Matrix was create")
+        self.matrix = with_tunnels.matrix
+        self.matrix_cond = with_tunnels.matrix_cond
+
+        WriteExcel(self.matrix, self.matrix_cond, f"matrix{2}.xlsx", f"matrix_cond{2}.xlsx")
 
     def CreateStartMatrix(self):
         Res_x = settings.width_RL  # Right
@@ -210,13 +208,3 @@ class RoguelikeKA:
         self.matrix_cond = ord_island.matrix_cond
         self.size_of_land = ord_island.size_of_land
         self.amounts_lands = ord_island.amounts_lands
-
-    def ExportMatricesToExcel(self, matrix_filename = "matrix.xlsx", cond_filename = "matrix_cond.xlsx"):
-        """a function that exports 2 matrices (self.matrix and self.matrix_cond) to excel"""
-        matrix_lower_layer = [[self.matrix[x][0][y] for y in range(len(self.matrix[x][0]))] for x in range(len(self.matrix))]
-
-        df_matrix = pd.DataFrame(matrix_lower_layer)
-        df_matrix_cond = pd.DataFrame(self.matrix_cond)
-
-        df_matrix.to_excel(matrix_filename, index = False, header = False)
-        df_matrix_cond.to_excel(cond_filename, index = False, header = False)
