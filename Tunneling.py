@@ -1,6 +1,7 @@
 from settings import settings
 from BiomesType import BiomesType
 from WriteExcel import WriteExcel
+from TraverseSquareAlgorithm import TraverseSquareAlgorithm
 
 class Tunneling():
 
@@ -27,7 +28,7 @@ class Tunneling():
         was_key = []
 
         for x in range(len(self.matrix_cond)):
-            for y in range(len(self.matrix_cond[x])):   ###ГДЕ-ТО УХОДИТ В БЕСКОНЕЧНЫЙ ЦИКЛ
+            for y in range(len(self.matrix_cond[x])):
                 if self.matrix_cond[x][y] != 0 and self.matrix_cond[x][y] not in was_key and self.matrix_cond[x][y] != self.num_key:
                     was_key.append(int(self.matrix_cond[x][y]))
                     cur_key = int(self.matrix_cond[x][y])
@@ -40,23 +41,31 @@ class Tunneling():
                     side_y = [(cur_isl_sides[2][0] - 1) if (cur_isl_sides[2][0] - 1) >= 0 else cur_isl_sides[2][0],
                               (cur_isl_sides[2][1] + 1) if (cur_isl_sides[2][1] + 1) < len(self.matrix_cond[0]) else cur_isl_sides[2][1]]
 
+
                     while counter < 3:  #Много раз повторяется алгоритм поиска по квадрату. В отдельный модуль
                         print(f"Beginning while counter. counter = {counter}")
-                        d_x = side_x[0]
-                        for d_y in range(side_y[0], side_y[1] + 1):
-                            have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
 
-                        d_y = side_y[0]
-                        for d_x in range(side_x[0], side_x[1] + 1):
-                            have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
+                        def BuildTunnel(x, y):
+                            nonlocal have_road
+                            have_road = self.CanBuildTunnel(x, y, cur_key, have_road)
 
-                        d_x = side_x[1]
-                        for d_y in range(side_y[0], side_y[1] + 1):
-                            have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
+                        TraverseSquareAlgorithm.TraverseSquare(side_x, side_y, BuildTunnel)
 
-                        d_y = side_y[1]
-                        for d_x in range(side_x[0], side_x[1] + 1):
-                            have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
+                        # d_x = side_x[0]
+                        # for d_y in range(side_y[0], side_y[1] + 1):
+                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
+                        #
+                        # d_y = side_y[0]
+                        # for d_x in range(side_x[0], side_x[1] + 1):
+                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
+                        #
+                        # d_x = side_x[1]
+                        # for d_y in range(side_y[0], side_y[1] + 1):
+                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
+                        #
+                        # d_y = side_y[1]
+                        # for d_x in range(side_x[0], side_x[1] + 1):
+                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
 
                         if have_road:
                             counter += 1
@@ -68,7 +77,6 @@ class Tunneling():
         for x in range(len(self.matrix_cond)):
             for y in range(len(self.matrix_cond[x])):
                 self.matrix[x][0][y] = BiomesType.air_RL if (self.matrix_cond[x][y] == 0) else BiomesType.land_RL
-
 
     def CanBuildTunnel(self, d_x, d_y, cur_key, have_road):
         """We are checking whether it is possible to build a tunnel. If possible, we are building"""
