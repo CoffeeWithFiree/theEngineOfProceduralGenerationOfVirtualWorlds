@@ -2,6 +2,7 @@ from settings import settings
 from BiomesType import BiomesType
 from FloodFeelCounter import FloodFeelCounter
 import random
+from TraverseSquareAlgorithm import TraverseSquareAlgorithm
 
 class OrderingIsland:
     def __init__(self, matrix, matrix_cond, size_of_land, amounts_lands, np):
@@ -199,29 +200,16 @@ class OrderingIsland:
         """reduces the size of too large islands"""
 
         while self.size_of_land[number_of_land] > self.need_size[-1]:
-            x = sides_x[0]
-            for y in range(sides_y[0], sides_y[1] + 1):
-                self.CheckCurCellIsCurIsland(x, y, number_of_land)
-                if self.size_of_land[number_of_land] <= self.need_size[-1]:
-                    return
 
-            y = sides_y[0]
-            for x in range(sides_x[0], sides_x[1] + 1):
+            def CheckAndReduce(x, y):
                 self.CheckCurCellIsCurIsland(x, y, number_of_land)
                 if self.size_of_land[number_of_land] <= self.need_size[-1]:
-                    return
+                    raise StopIteration #interrupting the crawl immediately
 
-            x = sides_x[1]
-            for y in range(sides_y[0], sides_y[1] + 1):
-                self.CheckCurCellIsCurIsland(x, y, number_of_land)
-                if self.size_of_land[number_of_land] <= self.need_size[-1]:
-                    return
-
-            y = sides_y[1]
-            for x in range(sides_x[0], sides_x[1] + 1):
-                self.CheckCurCellIsCurIsland(x, y, number_of_land)
-                if self.size_of_land[number_of_land] <= self.need_size[-1]:
-                    return
+            try:
+                TraverseSquareAlgorithm.TraverseSquare(sides_x, sides_y, CheckAndReduce)
+            except StopIteration:
+                return
 
             sides_x[0] += 1
             sides_x[1] -= 1

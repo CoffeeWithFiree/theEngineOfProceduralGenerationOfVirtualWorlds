@@ -42,7 +42,7 @@ class Tunneling():
                               (cur_isl_sides[2][1] + 1) if (cur_isl_sides[2][1] + 1) < len(self.matrix_cond[0]) else cur_isl_sides[2][1]]
 
 
-                    while counter < 3:  #Много раз повторяется алгоритм поиска по квадрату. В отдельный модуль
+                    while counter < 3:
                         print(f"Beginning while counter. counter = {counter}")
 
                         def BuildTunnel(x, y):
@@ -50,22 +50,6 @@ class Tunneling():
                             have_road = self.CanBuildTunnel(x, y, cur_key, have_road)
 
                         TraverseSquareAlgorithm.TraverseSquare(side_x, side_y, BuildTunnel)
-
-                        # d_x = side_x[0]
-                        # for d_y in range(side_y[0], side_y[1] + 1):
-                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
-                        #
-                        # d_y = side_y[0]
-                        # for d_x in range(side_x[0], side_x[1] + 1):
-                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
-                        #
-                        # d_x = side_x[1]
-                        # for d_y in range(side_y[0], side_y[1] + 1):
-                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
-                        #
-                        # d_y = side_y[1]
-                        # for d_x in range(side_x[0], side_x[1] + 1):
-                        #     have_road = self.CanBuildTunnel(d_x, d_y, cur_key, have_road)
 
                         if have_road:
                             counter += 1
@@ -182,7 +166,7 @@ class Tunneling():
             search_attempts = 0
             max_attempts = max(len(self.matrix_cond), len(self.matrix_cond[0]))
 
-            while True:
+            while True: ####АЛГОРИТМ ПОШЕЛ В ПРОТИВОПОЛОЖНУЮ СТОРОНУ ОТ ОСТРОВА. ЧТОТО НЕ ТАК С ЦЕНТРОМ? РЕШЕНИЕ: ИДТИ ВО ВСЕ СТОРОНЫ ИЛИ НАЙТИ, ЧТО ПОШЛО НЕ ТАК
                 search_attempts += 1
                 if search_attempts >= max_attempts + 1:
                     raise RuntimeError(f"Couldn't find the island {key} for x: {x} and y: {y}")
@@ -206,4 +190,5 @@ class Tunneling():
                 not(0 <= right[0] + df_x < rows) and
                 not(0 <= diag[0] + df_x < rows and 0 <= diag[1] + df_y < cols)): ####ПОПАЛИ СЮДА
                     WriteExcel(self.matrix, self.matrix_cond, f"matrix_error.xlsx", f"matrix_cond_error.xlsx")
+
                     raise ValueError(f"Couldn't find the nearest point on the island {key} from {x} {y}. up = {up}, right = {right}, diag = {diag}")

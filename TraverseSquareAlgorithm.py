@@ -2,6 +2,7 @@
 class TraverseSquareAlgorithm:
     @staticmethod
     def TraverseSquare(side_x, side_y, action):
+        """The square passage algorithm"""
         d_x = side_x[0]
         for d_y in range(side_y[0], side_y[1] + 1):
             action(d_x, d_y)
