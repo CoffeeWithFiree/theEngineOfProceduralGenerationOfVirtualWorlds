@@ -153,15 +153,13 @@ class Tunneling():
         if self.matrix_cond[x][y] == key:
             return x, y
         else:
-
-            while True:
-                result = []
-                def Check(dx, dy):
-                    if self.matrix_cond[dx][dy] == key:
-                        result.append(dx)
-                        result.append(dy)
-                        raise StopIteration
-                try:
-                    TraverseSquareAlgorithm.TraverseSquareExpandingFromPoint(x, y, self.matrix_cond, Check)
-                except StopIteration:
-                    return result[0], result[1]
+            result = []
+            def Check(dx, dy):
+                if self.matrix_cond[dx][dy] == key:
+                    result.append(dx)
+                    result.append(dy)
+                    raise StopIteration
+            try:
+                TraverseSquareAlgorithm.TraverseSquareExpandingFromPoint(x, y, self.matrix_cond, Check)
+            except StopIteration:
+                return result[0], result[1]

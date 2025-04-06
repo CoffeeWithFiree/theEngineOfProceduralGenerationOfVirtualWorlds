@@ -223,7 +223,7 @@ class OrderingIsland:
             self.size_of_land[number_of_land] -= 1
 
 
-    def CreateNewIsland(self):
+    def CreateNewIsland(self): ###АЛГОРИТМ КВАДРАТА
         """Creating a new island in a suitable empty area"""
         start_x = random.randint(0, (len(self.matrix_cond) - 1))
         start_y = random.randint(0, (len(self.matrix_cond[0]) - 1))
