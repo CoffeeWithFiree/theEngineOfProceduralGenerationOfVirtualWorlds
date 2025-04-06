@@ -147,48 +147,21 @@ class Tunneling():
                 else:
                     print(f"going abroad by y, where y = {y + def_y}")
 
-
     def SearchNearestBoundaryCell(self, key, x, y, center):
         """If there is no island in the corner cell, go up (down) and right (left) and diagonal
         at the same time in search of the first available island cell."""
         if self.matrix_cond[x][y] == key:
             return x, y
         else:
-            rows = len(self.matrix_cond)
-            cols = len(self.matrix_cond[0])
 
-            df_x = 1 if center[0] > x else -1
-            df_y = 1 if center[1] > y else -1
-
-            up, right, diag = [x, y], [x, y], [x, y]
-
-            #debugging
-            search_attempts = 0
-            max_attempts = max(len(self.matrix_cond), len(self.matrix_cond[0]))
-
-            while True: ####АЛГОРИТМ ПОШЕЛ В ПРОТИВОПОЛОЖНУЮ СТОРОНУ ОТ ОСТРОВА. ЧТОТО НЕ ТАК С ЦЕНТРОМ? РЕШЕНИЕ: ИДТИ ВО ВСЕ СТОРОНЫ ИЛИ НАЙТИ, ЧТО ПОШЛО НЕ ТАК
-                search_attempts += 1
-                if search_attempts >= max_attempts + 1:
-                    raise RuntimeError(f"Couldn't find the island {key} for x: {x} and y: {y}")
-                if 0 <= up[1] + df_y < cols:
-                    up[1] += df_y
-                    if self.matrix_cond[up[0]][up[1]] == key:
-                        return up[0], up[1]
-
-                if 0 <= right[0] + df_x < rows:
-                    right[0] += df_x
-                    if self.matrix_cond[right[0]][right[1]] == key:
-                        return right[0], right[1]
-
-                if 0 <= diag[0] + df_x < rows and 0 <= diag[1] + df_y < cols:
-                    diag[0] += df_x
-                    diag[1] += df_y
-                    if self.matrix_cond[diag[0]][diag[1]] == key:
-                        return diag[0], diag[1]
-
-                if (not(0 <= up[1] + df_y < cols) and
-                not(0 <= right[0] + df_x < rows) and
-                not(0 <= diag[0] + df_x < rows and 0 <= diag[1] + df_y < cols)): ####ПОПАЛИ СЮДА
-                    WriteExcel(self.matrix, self.matrix_cond, f"matrix_error.xlsx", f"matrix_cond_error.xlsx")
-
-                    raise ValueError(f"Couldn't find the nearest point on the island {key} from {x} {y}. up = {up}, right = {right}, diag = {diag}")
+            while True:
+                result = []
+                def Check(dx, dy):
+                    if self.matrix_cond[dx][dy] == key:
+                        result.append(dx)
+                        result.append(dy)
+                        raise StopIteration
+                try:
+                    TraverseSquareAlgorithm.TraverseSquareExpandingFromPoint(x, y, self.matrix_cond, Check)
+                except StopIteration:
+                    return result[0], result[1]
