@@ -222,46 +222,19 @@ class OrderingIsland:
             self.matrix_cond[x][y] = 0
             self.size_of_land[number_of_land] -= 1
 
-
-    def CreateNewIsland(self): ###АЛГОРИТМ КВАДРАТА
+    def CreateNewIsland(self):
         """Creating a new island in a suitable empty area"""
         start_x = random.randint(0, (len(self.matrix_cond) - 1))
         start_y = random.randint(0, (len(self.matrix_cond[0]) - 1))
 
-        min_x, max_x = start_x, start_x
-        min_y, max_y = start_y, start_y
+        def Check(dx, dy):
+            if self.CreateNewLandHelper(dx, dy):
+                raise StopIteration
 
-        while min_x >= 0 or max_x < len(self.matrix_cond) or min_y >= 0 or max_y < len(self.matrix_cond[0]):
-
-            x =  min_x
-            for y in range(min_y, max_y + 1):
-                if self.CreateNewLandHelper(x, y):
-                    return
-
-            x = max_x
-            for y in range(min_y, max_y + 1):
-                if self.CreateNewLandHelper(x, y):
-                    return
-
-            y = min_y
-            for x in range(min_x, max_x + 1):
-                if self.CreateNewLandHelper(x, y):
-                    return
-
-            y = max_y
-            for x in range(min_x, max_x + 1):
-                if self.CreateNewLandHelper(x, y):
-                    return
-
-            min_x -= 1
-            max_x += 1
-            min_y -= 1
-            max_y += 1
-
-            min_x = max(0, min_x)
-            max_x = min(max_x, len(self.matrix_cond) - 1)
-            min_y = max(0, min_y)
-            max_y = min(max_y, len(self.matrix_cond[0]) - 1)
+        try:
+            TraverseSquareAlgorithm.TraverseSquareExpandingFromPoint(start_x, start_y, self.matrix_cond, Check)
+        except StopIteration:
+            return
 
     def CreateNewLandHelper(self, x, y):
         if 0 <= x < len(self.matrix_cond) and 0 <= y < len(self.matrix_cond[x]):
