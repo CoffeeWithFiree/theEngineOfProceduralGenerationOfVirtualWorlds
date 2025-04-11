@@ -5,3 +5,4 @@ class BiomesType:
 
     air_RL = 0
     land_RL = 1
+    tunnel_RL = 2

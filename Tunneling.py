@@ -60,7 +60,9 @@ class Tunneling():
 
         for x in range(len(self.matrix_cond)):
             for y in range(len(self.matrix_cond[x])):
-                self.matrix[x][0][y] = BiomesType.air_RL if (self.matrix_cond[x][y] == 0) else BiomesType.land_RL
+                self.matrix[x][0][y] = BiomesType.air_RL if (self.matrix_cond[x][y] == 0) \
+                    else BiomesType.tunnel_RL if (self.matrix_cond[x][y] == self.num_key) \
+                    else BiomesType.land_RL
 
     def CanBuildTunnel(self, d_x, d_y, cur_key, have_road):
         """We are checking whether it is possible to build a tunnel. If possible, we are building"""

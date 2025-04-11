@@ -85,6 +85,19 @@ class RoguelikeKA:
                      10: {2: vertices[2], 6: vertices[6], 7: vertices[7], "color": settings.color_land_RL},
                      11: {2: vertices[2], 7: vertices[7], 3: vertices[3], "color": settings.color_land_RL}}
 
+        triangles_tunnel = {0: {0: vertices[0], 1: vertices[1], 2: vertices[2], "color": settings.color_tunnel},
+                            1: {0: vertices[0], 2: vertices[2], 3: vertices[3], "color": settings.color_tunnel},
+                            2: {4: vertices[4], 0: vertices[0], 3: vertices[3], "color": settings.color_tunnel},
+                            3: {4: vertices[4], 3: vertices[3], 7: vertices[7], "color": settings.color_tunnel},
+                            4: {5: vertices[5], 4: vertices[4], 7: vertices[7], "color": settings.color_tunnel},
+                            5: {5: vertices[5], 7: vertices[7], 6: vertices[6], "color": settings.color_tunnel},
+                            6: {1: vertices[1], 5: vertices[5], 6: vertices[6], "color": settings.color_tunnel},
+                            7: {1: vertices[1], 6: vertices[6], 2: vertices[2], "color": settings.color_tunnel},
+                            8: {4: vertices[4], 5: vertices[5], 1: vertices[1], "color": settings.color_tunnel},
+                            9: {4: vertices[4], 1: vertices[1], 0: vertices[0], "color": settings.color_tunnel},
+                            10: {2: vertices[2], 6: vertices[6], 7: vertices[7], "color": settings.color_tunnel},
+                            11: {2: vertices[2], 7: vertices[7], 3: vertices[3], "color": settings.color_tunnel}}
+
         objects = dict()
 
         Res_x, Res_y, Res_z = self.matrix.shape
@@ -92,16 +105,33 @@ class RoguelikeKA:
         for x in range(Res_x):
             for z in range(Res_z):
                 for y in range(Res_y):
-                    #print(x, y, z)
-                    if self.matrix[x, y, z] == BiomesType.land_RL:
+
+                    def CreateObj(triangles):
+                        nonlocal i
                         vertices_cur = vertices
-                        triangles_cur = triangles_land
+                        triangles_cur = triangles
                         position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
                         object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
-
                         objects[f"object{i}"] = object_cur
-
                         i += 1
+
+                    #print(x, y, z)
+                    if self.matrix[x, y, z] == BiomesType.land_RL:
+                        CreateObj(triangles_land)
+                        # vertices_cur = vertices
+                        # triangles_cur = triangles_land
+                        # position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
+                        # object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
+                        # objects[f"object{i}"] = object_cur
+                        # i += 1
+                    elif self.matrix[x, y, z] == BiomesType.tunnel_RL:
+                        CreateObj(triangles_tunnel)
+                        # vertices_cur = vertices
+                        # triangles_cur = triangles_tunnel
+                        # position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
+                        # object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
+                        # objects[f"object{i}"] = object_cur
+                        # i += 1
 
         self.graphic3D.RenderScene(objects)
 

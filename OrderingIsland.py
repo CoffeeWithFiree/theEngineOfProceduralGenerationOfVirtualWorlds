@@ -82,7 +82,7 @@ class OrderingIsland:
                             elif self.size_of_land[i] < self.need_size[0]:
                                 if self.Expansion(i, sides_x,sides_y):
                                     self.DeleteIsland(key, sides_x, sides_y)
-                                    del self.size_of_land[key]
+                                    del self.size_of_land[key] #Возникла ошибка KEYERROR
                                     self.CreateNewIsland()
                         ###
 
