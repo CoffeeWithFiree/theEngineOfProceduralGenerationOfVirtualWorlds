@@ -211,8 +211,8 @@ class OrderingIsland:
             except StopIteration:
                 return
 
-            sides_x[0] += 1
-            sides_x[1] -= 1
+            sides_x[0] += 1 #А если выйдет за границы?
+            sides_x[1] -= 1 #Внедрить в сам модуль TraverseSquareAlgorithm
             sides_y[0] += 1
             sides_y[1] -= 1
 

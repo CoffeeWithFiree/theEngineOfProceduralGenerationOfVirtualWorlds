@@ -13,11 +13,6 @@ class Tunneling():
         self.matrix = matrix
         self.amounts_lands = amounts_land
 
-        Res_x = settings.width_RL  # Right
-        Res_y = settings.height_RL  # Up
-        Res_z = settings.length_RL  # forwardd
-
-        #self.graph = self.np.zeros((Res_x, Res_y, Res_z))
         self.island_centr_sides = dict() #[centr, side_x, side_y] of the key island
         self.roads = [] #Which islands have paths between them? [min(key1), max(key2)]
 
@@ -43,7 +38,7 @@ class Tunneling():
 
 
                     while counter < 3:
-                        print(f"Beginning while counter. counter = {counter}")
+                        #print(f"Beginning while counter. counter = {counter}")
 
                         def BuildTunnel(x, y):
                             nonlocal have_road
@@ -100,25 +95,8 @@ class Tunneling():
         sides_key1 = self.island_centr_sides[key1] #Второй раз вытаскиваем границы
         sides_key2 = self.island_centr_sides[key2]
 
-        if sides_key1[0][1] >= sides_key2[0][1] + 3:
-            start_y = sides_key1[2][0]
-            end_y = sides_key2[2][1]
-        elif sides_key1[0][1] + 3 <= sides_key2[0][1]:
-            start_y = sides_key1[2][1]
-            end_y = sides_key2[2][0]
-        else:
-            start_y = sides_key1[0][1]
-            end_y = sides_key2[0][1]
-
-        if sides_key1[0][0] >= sides_key2[0][0] + 3:
-            start_x = sides_key1[1][0]
-            end_x = sides_key2[1][1]
-        elif sides_key1[0][0] + 3 <= sides_key2[0][0]:
-            start_x = sides_key1[1][1]
-            end_x = sides_key2[1][0]
-        else:
-            start_x = sides_key1[0][0]
-            end_x = sides_key2[0][0]
+        start_x, end_x = self.DetermineAxisStartEnd(sides_key1[1], sides_key2[1], sides_key1[0][0], sides_key2[0][0]) #X ####ВНЕСТИ ВХОДНЫЕ ПАРАМЕТРЫ
+        start_y, end_y = self.DetermineAxisStartEnd(sides_key1[2], sides_key2[2], sides_key1[0][1], sides_key2[0][1]) #Y
 
         x, y = self.SearchNearestBoundaryCell(key1, start_x, start_y, sides_key1[0])
         end_x, end_y = self.SearchNearestBoundaryCell(key2, end_x, end_y, sides_key2[0])
@@ -148,6 +126,24 @@ class Tunneling():
                         self.matrix_cond[x][y] = self.num_key
                 else:
                     print(f"going abroad by y, where y = {y + def_y}")
+
+    def RangeInspect(self, a_min, a_max, b_min, b_max):
+        return max(a_min, b_min) <= min(a_max, b_max)
+
+    def DetermineAxisStartEnd(self, s1_range, s2_range, s1_center, s2_center):
+        if self.RangeInspect(*s1_range, * s2_range):
+            coord = max(s1_range[0], s2_range[0])
+            start, end = coord, coord
+        elif s1_center >= s2_center + 3:
+            start = s1_range[0]
+            end = s2_range[1]
+        elif s1_center + 3 <= s2_center:
+            start = s1_range[1]
+            end = s2_range[0]
+        else:
+            start = s1_center
+            end = s2_center
+        return  start, end
 
     def SearchNearestBoundaryCell(self, key, x, y, center):
         """If there is no island in the corner cell, go up (down) and right (left) and diagonal
