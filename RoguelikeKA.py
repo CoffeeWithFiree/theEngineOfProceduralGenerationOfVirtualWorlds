@@ -6,6 +6,7 @@ from OrderingIsland import OrderingIsland
 from PostProcessingAfterOrdering import PostProcessingAfterOrdering
 from Tunneling import Tunneling
 from WriteExcel import WriteExcel
+from StartAndEnd import StartAndEnd
 
 class RoguelikeKA:
     def __init__(self, main, pg, np, graphic3D):
@@ -41,6 +42,12 @@ class RoguelikeKA:
 
         self.matrix = with_tunnels.matrix
         self.matrix_cond = with_tunnels.matrix_cond
+        self.island_centr_sides = with_tunnels.island_centr_sides
+
+        with_start_end_lands = StartAndEnd(self.matrix, self.matrix_cond, self.island_centr_sides , self.size_of_land, self.np)
+
+        self.matrix = with_start_end_lands.matrix
+        self.matrix_cond = with_start_end_lands.matrix_cond
 
         WriteExcel(self.matrix, self.matrix_cond, f"matrix{2}.xlsx", f"matrix_cond{2}.xlsx")
 
@@ -98,6 +105,32 @@ class RoguelikeKA:
                             10: {2: vertices[2], 6: vertices[6], 7: vertices[7], "color": settings.color_tunnel},
                             11: {2: vertices[2], 7: vertices[7], 3: vertices[3], "color": settings.color_tunnel}}
 
+        triangles_start = {0: {0: vertices[0], 1: vertices[1], 2: vertices[2], "color": settings.color_start},
+                            1: {0: vertices[0], 2: vertices[2], 3: vertices[3], "color": settings.color_start},
+                            2: {4: vertices[4], 0: vertices[0], 3: vertices[3], "color": settings.color_start},
+                            3: {4: vertices[4], 3: vertices[3], 7: vertices[7], "color": settings.color_start},
+                            4: {5: vertices[5], 4: vertices[4], 7: vertices[7], "color": settings.color_start},
+                            5: {5: vertices[5], 7: vertices[7], 6: vertices[6], "color": settings.color_start},
+                            6: {1: vertices[1], 5: vertices[5], 6: vertices[6], "color": settings.color_start},
+                            7: {1: vertices[1], 6: vertices[6], 2: vertices[2], "color": settings.color_start},
+                            8: {4: vertices[4], 5: vertices[5], 1: vertices[1], "color": settings.color_start},
+                            9: {4: vertices[4], 1: vertices[1], 0: vertices[0], "color": settings.color_start},
+                            10: {2: vertices[2], 6: vertices[6], 7: vertices[7], "color": settings.color_start},
+                            11: {2: vertices[2], 7: vertices[7], 3: vertices[3], "color": settings.color_start}}
+
+        triangles_end = {0: {0: vertices[0], 1: vertices[1], 2: vertices[2], "color": settings.color_end},
+                           1: {0: vertices[0], 2: vertices[2], 3: vertices[3], "color": settings.color_end},
+                           2: {4: vertices[4], 0: vertices[0], 3: vertices[3], "color": settings.color_end},
+                           3: {4: vertices[4], 3: vertices[3], 7: vertices[7], "color": settings.color_end},
+                           4: {5: vertices[5], 4: vertices[4], 7: vertices[7], "color": settings.color_end},
+                           5: {5: vertices[5], 7: vertices[7], 6: vertices[6], "color": settings.color_end},
+                           6: {1: vertices[1], 5: vertices[5], 6: vertices[6], "color": settings.color_end},
+                           7: {1: vertices[1], 6: vertices[6], 2: vertices[2], "color": settings.color_end},
+                           8: {4: vertices[4], 5: vertices[5], 1: vertices[1], "color": settings.color_end},
+                           9: {4: vertices[4], 1: vertices[1], 0: vertices[0], "color": settings.color_end},
+                           10: {2: vertices[2], 6: vertices[6], 7: vertices[7], "color": settings.color_end},
+                           11: {2: vertices[2], 7: vertices[7], 3: vertices[3], "color": settings.color_end}}
+
         objects = dict()
 
         Res_x, Res_y, Res_z = self.matrix.shape
@@ -118,20 +151,15 @@ class RoguelikeKA:
                     #print(x, y, z)
                     if self.matrix[x, y, z] == BiomesType.land_RL:
                         CreateObj(triangles_land)
-                        # vertices_cur = vertices
-                        # triangles_cur = triangles_land
-                        # position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
-                        # object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
-                        # objects[f"object{i}"] = object_cur
-                        # i += 1
+
                     elif self.matrix[x, y, z] == BiomesType.tunnel_RL:
                         CreateObj(triangles_tunnel)
-                        # vertices_cur = vertices
-                        # triangles_cur = triangles_tunnel
-                        # position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
-                        # object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
-                        # objects[f"object{i}"] = object_cur
-                        # i += 1
+
+                    elif self.matrix[x, y, z] == BiomesType.start_land:
+                        CreateObj(triangles_start)
+
+                    elif self.matrix[x, y, z] == BiomesType.end_land:
+                        CreateObj(triangles_end)
 
         self.graphic3D.RenderScene(objects)
 

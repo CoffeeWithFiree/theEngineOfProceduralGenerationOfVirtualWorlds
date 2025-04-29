@@ -18,7 +18,6 @@ class settings():
     length = 12 #z
 
     color_land = (0, 153, 0)
-    color_tunnel = (255, 0, 0)
     color_sea = (0, 102, 255)
 
     #RougeLikeKA
@@ -38,4 +37,7 @@ class settings():
     length_RL = 24 #z
 
     color_land_RL = (0, 153, 0)
+    color_tunnel = (255, 0, 0)
+    color_start = (0, 42, 255)
+    color_end = (0, 238, 255)
 
