@@ -1,8 +1,5 @@
 from Rasterization3D import Rasterization3D
-from CellularAutomata import CellularAutomata
 from RoguelikeKA import RoguelikeKA
-# from BiomesType import BiomesType
-# from settings import settings
 
 import numpy as np
 import pygame as pg

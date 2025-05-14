@@ -1,6 +1,4 @@
-from settings import settings
 from BiomesType import BiomesType
-from WriteExcel import WriteExcel
 from TraverseSquareAlgorithm import TraverseSquareAlgorithm
 from SearchingIslandGeometricCenterAndBorders import SearchingIslandGeometricCenterAndBorders as SIGCAB
 
