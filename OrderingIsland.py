@@ -1,8 +1,8 @@
 from settings import settings
 from BiomesType import BiomesType
-from FloodFeelCounter import FloodFeelCounter
 import random
 from TraverseSquareAlgorithm import TraverseSquareAlgorithm
+from SearchingIslandGeometricCenterAndBorders import SearchingIslandGeometricCenterAndBorders as SIGCAB
 
 class OrderingIsland:
     def __init__(self, matrix, matrix_cond, size_of_land, amounts_lands, np):
@@ -25,7 +25,7 @@ class OrderingIsland:
             signal_was_change = False
             size_of_land_helper = self.size_of_land.copy()
             for key, value in size_of_land_helper.items():
-                centr, sides_x, sides_y = self.SearchingIslandGeometricCenterAndBorders(key)
+                centr, sides_x, sides_y = SIGCAB.SearcIslGeomCentAndBords(key, self.matrix_cond)
                 if value < self.need_size[0]:
                     if status_amount_of_lands == "more":    ####GOOD#####
                         self.DeleteIsland(key, sides_x, sides_y)
@@ -76,7 +76,7 @@ class OrderingIsland:
                         ###Bringing the islands to a suitable size
                         bigger_island = sorted_new_isl[:2]
                         for i, _ in bigger_island:
-                            centr, sides_x, sides_y = self.SearchingIslandGeometricCenterAndBorders(i)
+                            centr, sides_x, sides_y = SIGCAB.SearcIslGeomCentAndBords(i, self.matrix_cond)
                             if self.size_of_land[i] > self.need_size[1]:
                                 self.ReducingSize(i, sides_x, sides_y)
                             elif self.size_of_land[i] < self.need_size[0]:
@@ -97,7 +97,7 @@ class OrderingIsland:
                             if value < min[1]:
                                 min = [key, value]
 
-                        centr, sides_x, sides_y = self.SearchingIslandGeometricCenterAndBorders(min[0])
+                        centr, sides_x, sides_y = SIGCAB.SearcIslGeomCentAndBords(min[0], self.matrix_cond)
                         self.DeleteIsland(min[0], sides_x, sides_y)
                         del self.size_of_land[min[0]]
                         self.amounts_lands = self.amounts_lands - 1
@@ -211,8 +211,8 @@ class OrderingIsland:
             except StopIteration:
                 return
 
-            sides_x[0] += 1 #А если выйдет за границы?
-            sides_x[1] -= 1 #Внедрить в сам модуль TraverseSquareAlgorithm
+            sides_x[0] += 1
+            sides_x[1] -= 1
             sides_y[0] += 1
             sides_y[1] -= 1
 
@@ -330,27 +330,6 @@ class OrderingIsland:
                         stack_.append((r, c - 1))
 
         return counter
-
-    def SearchingIslandGeometricCenterAndBorders(self, number_of_land):
-        """search for the geometric central cell of the island and borders"""
-        sides_x = [len(self.matrix_cond), 0] #min and max
-        sides_y = [len(self.matrix_cond[0]), 0] #min and max
-
-        for x in range(len(self.matrix_cond)):
-            for y in range(len(self.matrix_cond[x])):
-                if self.matrix_cond[x][y] == number_of_land:
-                    if x < sides_x[0]:
-                        sides_x[0] = x
-                    if x > sides_x[1]:
-                        sides_x[1] = x
-
-                    if y < sides_y[0]:
-                        sides_y[0] = y
-                    if y > sides_y[1]:
-                        sides_y[1] = y
-
-        centr = [int(sum(sides_x) / 2), int(sum(sides_y) / 2)]
-        return centr, sides_x, sides_y
 
     def CheckAround(self, x, y, number_of_land):
         """A function that checks that there are no foreign islands around the cell"""

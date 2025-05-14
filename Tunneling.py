@@ -2,6 +2,7 @@ from settings import settings
 from BiomesType import BiomesType
 from WriteExcel import WriteExcel
 from TraverseSquareAlgorithm import TraverseSquareAlgorithm
+from SearchingIslandGeometricCenterAndBorders import SearchingIslandGeometricCenterAndBorders as SIGCAB
 
 class Tunneling():
 
@@ -18,7 +19,7 @@ class Tunneling():
 
         size_of_land_helper = self.size_of_land.copy()
         for key, value in size_of_land_helper.items():
-            self.island_centr_sides[key] = self.SearchingIslandGeometricCenterAndBorders(key)
+            self.island_centr_sides[key] = list(SIGCAB.SearcIslGeomCentAndBords(key, self.matrix_cond))
 
         was_key = []
 
@@ -68,27 +69,6 @@ class Tunneling():
                 self.roads.append([min(cur_key, sec_key), max(cur_key, sec_key)])
                 return True
         return have_road
-
-    def SearchingIslandGeometricCenterAndBorders(self, number_of_land):
-        """search for the geometric central cell of the island and borders"""
-        sides_x = [len(self.matrix_cond), 0] #min and max
-        sides_y = [len(self.matrix_cond[0]), 0] #min and max
-
-        for x in range(len(self.matrix_cond)):
-            for y in range(len(self.matrix_cond[x])):
-                if self.matrix_cond[x][y] == number_of_land:
-                    if x < sides_x[0]:
-                        sides_x[0] = x
-                    if x > sides_x[1]:
-                        sides_x[1] = x
-
-                    if y < sides_y[0]:
-                        sides_y[0] = y
-                    if y > sides_y[1]:
-                        sides_y[1] = y
-
-        centr = [int(sum(sides_x) / 2), int(sum(sides_y) / 2)]
-        return [centr, sides_x, sides_y]
 
     def Tunnel(self, key1, key2):
         """laying a path between two islands"""
