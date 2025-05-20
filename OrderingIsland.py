@@ -3,6 +3,7 @@ from BiomesType import BiomesType
 import random
 from TraverseSquareAlgorithm import TraverseSquareAlgorithm
 from SearchingIslandGeometricCenterAndBorders import SearchingIslandGeometricCenterAndBorders as SIGCAB
+from collections import deque
 
 class OrderingIsland:
     def __init__(self, matrix, matrix_cond, size_of_land, amounts_lands, np):
@@ -174,7 +175,7 @@ class OrderingIsland:
 
     def FeelForCut(self, x, y, num_old, num_new):
         """Flood feel, replacing one island index with another"""
-        stack_ = [(x, y)]
+        stack_ = deque([(x, y)])
         counter = 0
         while stack_:
 
@@ -249,7 +250,7 @@ class OrderingIsland:
 
     def FeelNewLand(self, number_of_land, x, y):
         """function to fill a new land area"""
-        stack_ = [(x, y)]
+        stack_ = deque([(x, y)])
         counter = 0
         was_check = set() #set to fast sears
 
@@ -257,7 +258,7 @@ class OrderingIsland:
         min_y, max_y = y, y
 
         while stack_:
-            r, c = stack_.pop(0)
+            r, c = stack_.popleft()
             if self.matrix_cond[r][c] == 0 and (self.Check4CellsAround(number_of_land, r, c) or counter == 0):
                 if self.CheckAround(r, c, number_of_land):
                     self.matrix_cond[r][c] = number_of_land
@@ -309,7 +310,7 @@ class OrderingIsland:
 
     def Counter_Islands(self, number_of_land, x, y):
         """Counts the number of cells of an island or a void"""
-        stack_ = [(x, y)]
+        stack_ = deque([(x, y)])
         counter = 0
         help_matrix = self.np.zeros((len(self.matrix_cond), len(self.matrix_cond[x])))
         while stack_:

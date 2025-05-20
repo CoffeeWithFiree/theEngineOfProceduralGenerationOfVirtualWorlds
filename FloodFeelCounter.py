@@ -1,4 +1,4 @@
-from BiomesType import BiomesType
+from collections import deque
 
 
 class FloodFeelCounter:
@@ -16,7 +16,7 @@ class FloodFeelCounter:
 
 
     def Feel(self):
-        stack_ = [(self.x, self.z)]
+        stack_ = deque([(self.x, self.z)])
         counter = 0
         while stack_:
 

@@ -37,7 +37,6 @@ class Tunneling():
 
 
                     while counter < 3:
-                        #print(f"Beginning while counter. counter = {counter}")
 
                         def BuildTunnel(x, y):
                             nonlocal have_road
