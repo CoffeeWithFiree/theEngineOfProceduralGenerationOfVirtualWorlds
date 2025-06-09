@@ -7,6 +7,7 @@ from PostProcessingAfterOrdering import PostProcessingAfterOrdering
 from Tunneling import Tunneling
 from WriteExcel import WriteExcel
 from StartAndEnd import StartAndEnd
+from CellsAround import CellsAround
 
 class RoguelikeKA:
     def __init__(self, main, pg, np, graphic3D):
@@ -167,75 +168,29 @@ class RoguelikeKA:
         """the ordered state of land and sea"""
         y = 0 #Use just for first layer
         warning_amounts = [3, 6, 7, 8]
+
         for x in range(len(self.matrix)):
             for z in range(len(self.matrix[x, y])):
-                land_counter = 0
-                air_counter = 0
+                counters = {"land_counter": 0,
+                            "air_counter": 0}
 
-                #[x - 1][z - 1]
-                if (x - 1) >= 0 and (z - 1) >= 0:
-                    if self.matrix[x - 1][y][z - 1] == BiomesType.land_RL:
-                        land_counter += 1
-                    else:
-                        air_counter += 1
 
-                #[x][z - 1]
-                if (z - 1) >= 0:
-                    if self.matrix[x][y][z - 1] == BiomesType.land_RL:
-                        land_counter += 1
+                def NextGenHelper(x, z):
+                    if self.matrix[x][y][z] == BiomesType.land_RL:
+                        counters["land_counter"] += 1
                     else:
-                        air_counter += 1
+                        counters["air_counter"] += 1
 
-                #[x + 1][z - 1]
-                if (x + 1) <= (settings.columns - 1) and (z - 1) >= 0:
-                    if self.matrix[x + 1][y][z - 1] == BiomesType.land_RL:
-                        land_counter += 1
-                    else:
-                        air_counter += 1
-
-                #[x - 1][z]
-                if (x - 1) >= 0:
-                    if self.matrix[x - 1][y][z] == BiomesType.land_RL:
-                        land_counter += 1
-                    else:
-                        air_counter += 1
-
-                #[x + 1][z]
-                if (x + 1) <= (settings.columns - 1):
-                    if self.matrix[x + 1][y][z] == BiomesType.land_RL:
-                        land_counter += 1
-                    else:
-                        air_counter += 1
-
-                # [x - 1][z + 1]
-                if (x - 1) >= 0 and (z + 1 <= (settings.rows - 1)):
-                    if self.matrix[x - 1][y][z + 1] == BiomesType.land_RL:
-                        land_counter += 1
-                    else:
-                        air_counter += 1
-
-                # [x][z + 1]
-                if (z + 1 <= (settings.rows - 1)):
-                    if self.matrix[x][y][z + 1] == BiomesType.land_RL:
-                        land_counter += 1
-                    else:
-                        air_counter += 1
-
-                # [x + 1][z + 1]
-                if ((x + 1) <= (settings.columns - 1)) and (z + 1 <= (settings.rows - 1)):
-                    if self.matrix[x + 1][y][z + 1] == BiomesType.land_RL:
-                        land_counter += 1
-                    else:
-                        air_counter += 1
+                CellsAround.EightCellsAround(x, z, NextGenHelper)
 
                 #current cell is land
                 if self.matrix[x][y][z] == BiomesType.land_RL:
-                    if air_counter in warning_amounts:
+                    if counters["air_counter"] in warning_amounts:
                         self.matrix[x][y][z] = BiomesType.air_RL
 
                 #current cell is air
                 elif self.matrix[x][y][z] == BiomesType.air_RL:
-                    if land_counter in warning_amounts:
+                    if counters["land_counter"] in warning_amounts:
                         self.matrix[x][y][z] = BiomesType.land_RL
 
 

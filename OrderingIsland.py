@@ -139,7 +139,7 @@ class OrderingIsland:
         """The expansion of too small islands"""
         iter_ = 0
         max_iter = 20
-        while self.size_of_land[number_of_land] < self.need_size[0]:
+        while self.size_of_land[number_of_land] < self.need_size[0]: #SQUARE ALGORITHM
             iter_ +=1
             if iter_ >= max_iter:
                 return True #Something is preventing it from expanding
@@ -177,7 +177,7 @@ class OrderingIsland:
         """Flood feel, replacing one island index with another"""
         stack_ = deque([(x, y)])
         counter = 0
-        while stack_:
+        while stack_:  #FloodFeel
 
             r, c = stack_.pop()
             if self.matrix_cond[r][c] == num_old:
@@ -257,7 +257,7 @@ class OrderingIsland:
         min_x, max_x = x, x
         min_y, max_y = y, y
 
-        while stack_:
+        while stack_:   #FloodFeel?
             r, c = stack_.popleft()
             if self.matrix_cond[r][c] == 0 and (self.Check4CellsAround(number_of_land, r, c) or counter == 0):
                 if self.CheckAround(r, c, number_of_land):
@@ -284,7 +284,7 @@ class OrderingIsland:
 
         return counter
 
-    def Check4CellsAround(self, number_of_land, x, y):
+    def Check4CellsAround(self, number_of_land, x, y):           #CELLSAROUND
         """checking that the lower, upper, right or left cell is part of the island"""
         # [x][y - 1]
         if (y - 1) >= 0:
@@ -313,7 +313,7 @@ class OrderingIsland:
         stack_ = deque([(x, y)])
         counter = 0
         help_matrix = self.np.zeros((len(self.matrix_cond), len(self.matrix_cond[x])))
-        while stack_:
+        while stack_:                    #FloodFeel
 
             r, c = stack_.pop()
             if self.matrix_cond[r][c] == number_of_land and help_matrix[r][c] == 0 and self.Check4CellsAround(number_of_land, r, c):
@@ -332,7 +332,7 @@ class OrderingIsland:
 
         return counter
 
-    def CheckAround(self, x, y, number_of_land):
+    def CheckAround(self, x, y, number_of_land):             #CELLSAROUND
         """A function that checks that there are no foreign islands around the cell"""
         # [x - 1][y - 1]
         if (x - 1) >= 0 and (y - 1) >= 0:
@@ -376,7 +376,7 @@ class OrderingIsland:
 
         return True
 
-    def CheckZeroAround(self, x, y):
+    def CheckZeroAround(self, x, y):              #CELLSAROUND
         """A function that checks that the cells around are not islands"""
         indexes = []
         # [x - 1][y - 1]
@@ -421,7 +421,7 @@ class OrderingIsland:
 
         return False if (len(indexes) == 0) else indexes
 
-    def FixDiagonalConflict(self):
+    def FixDiagonalConflict(self):                        #CELLSAROUND
         """Removing islands at the corners of other islands"""
         for x in range(len(self.matrix_cond)):
             for y in range(len(self.matrix_cond[x])):
