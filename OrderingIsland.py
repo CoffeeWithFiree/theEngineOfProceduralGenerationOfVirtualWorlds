@@ -1,3 +1,7 @@
+from turtledemo.penrose import start
+
+from numpy.ma.core import empty
+
 from settings import settings
 from BiomesType import BiomesType
 import random
@@ -137,26 +141,34 @@ class OrderingIsland:
 
     def Expansion(self, number_of_land, sides_x, sides_y):
         """The expansion of too small islands"""
-        iter_ = 0
         max_iter = 20
-        while self.size_of_land[number_of_land] < self.need_size[0]: #SQUARE ALGORITHM
-            iter_ +=1
-            if iter_ >= max_iter:
-                return True #Something is preventing it from expanding
-            for x in range(sides_x[0] - iter_, sides_x[1] + 1 + iter_):
-                for y in range(sides_y[0] - iter_, sides_y[1] + iter_):
-                    if x >= 0 and x <= (settings.columns - 1) and y >= 0 and y <= (settings.rows - 1):
-                        if self.matrix_cond[x][y] == number_of_land:
-                            empty_islands = self.CheckZeroAround(x, y)
-                            if empty_islands != False:
-                                for k in empty_islands:
 
-                                    if self.CheckAround(k[0], k[1], number_of_land):
-                                        if self.Check4CellsAround(number_of_land, k[0], k[1]):
-                                            self.matrix_cond[k[0]][k[1]] = number_of_land
-                                            self.size_of_land[number_of_land] = self.size_of_land[number_of_land] + 1
-                                            if self.size_of_land[number_of_land] >= self.need_size[0]:
-                                                return False
+        def ExpansionAction(x, y):
+            if self.matrix_cond[x][y] == number_of_land:
+                empty_islands = self.CheckZeroAround(x, y)
+                if empty_islands:
+                    for k_x, k_y in empty_islands:
+                        if self.CheckAround(k_x, k_y, number_of_land):
+                            if self.Check4CellsAround(number_of_land, k_x, k_y):
+                                self.matrix_cond[k_x][k_y] = number_of_land
+                                self.size_of_land[number_of_land] += 1
+                                if self.size_of_land[number_of_land] >= self.need_size[0]:
+                                    raise StopIteration
+
+        for i in range(max_iter):
+            try:
+                start_x = [max(0, sides_x[0] - i), min(len(self.matrix_cond) - 1, sides_x[1] + i)]
+                start_y = [max(0, sides_y[0] - i), min(len(self.matrix_cond[0]) - 1, sides_y[1] + i)]
+
+                TraverseSquareAlgorithm.TraverseSquare(
+                    start_x,
+                    start_y,
+                    ExpansionAction)
+
+            except StopIteration:
+                return False
+
+        return True
 
     def Cut(self, number_of_land, centr, sides_x, sides_y):
         """cutting the island into 2 parts in the center"""
