@@ -28,7 +28,7 @@ class Tunneling():
                     cur_key = int(self.matrix_cond[x][y])
                     have_road = False
                     counter = 0
-                    cur_isl_sides = self.island_centr_sides[cur_key] #[centr, side_x, side_y] #Первый раз вытаскиваем границы
+                    cur_isl_sides = self.island_centr_sides[cur_key] #[centr, side_x, side_y]
                     side_x = [(cur_isl_sides[1][0] - 1) if (cur_isl_sides[1][0] - 1) >= 0 else cur_isl_sides[1][0],
                               (cur_isl_sides[1][1] + 1) if (cur_isl_sides[1][1] + 1) < len(self.matrix_cond) else cur_isl_sides[1][1]]
 
@@ -69,10 +69,10 @@ class Tunneling():
 
     def Tunnel(self, key1, key2):
         """laying a path between two islands"""
-        sides_key1 = self.island_centr_sides[key1] #Второй раз вытаскиваем границы
+        sides_key1 = self.island_centr_sides[key1]
         sides_key2 = self.island_centr_sides[key2]
 
-        start_x, end_x = self.DetermineAxisStartEnd(sides_key1[1], sides_key2[1], sides_key1[0][0], sides_key2[0][0]) #X ####ВНЕСТИ ВХОДНЫЕ ПАРАМЕТРЫ
+        start_x, end_x = self.DetermineAxisStartEnd(sides_key1[1], sides_key2[1], sides_key1[0][0], sides_key2[0][0]) #X
         start_y, end_y = self.DetermineAxisStartEnd(sides_key1[2], sides_key2[2], sides_key1[0][1], sides_key2[0][1]) #Y
 
         x, y = self.SearchNearestBoundaryCell(key1, start_x, start_y, sides_key1[0])
@@ -81,7 +81,7 @@ class Tunneling():
         def_x = 1 if end_x > x else -1
         def_y = 1 if end_y > y else - 1
 
-        while True:  ####ЗДЕСЬ ПРОИСХОДИТ БЕСКОНЕЧНЫЙ ЦИКЛ
+        while True:
             print(f"Tunnel: x = {x}, y = {y}, end_x = {end_x}, end_y = {end_y}")
             if (x, y) == (end_x, end_y):
                 print(f"The last point has been reached: x = {x}, y = {y}")

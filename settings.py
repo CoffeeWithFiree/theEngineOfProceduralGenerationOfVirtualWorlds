@@ -1,3 +1,4 @@
+import numpy as np
 class settings():
     Vw = 1400
     Vh = 1000
@@ -21,6 +22,9 @@ class settings():
     color_sea = (0, 102, 255)
 
     #RougeLikeKA
+
+    need_lands = np.array([9, 10, 11, 12, 13])
+    need_size = np.array([18, 19, 20, 21, 22, 23])  # min and max
 
     Res_RL = [48, 4, 48] #x #y # z
 

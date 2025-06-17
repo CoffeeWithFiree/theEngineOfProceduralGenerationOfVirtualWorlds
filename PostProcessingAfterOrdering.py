@@ -10,8 +10,8 @@ class PostProcessingAfterOrdering():
         self.amounts_lands = amounts_land
         self.FixDiagonalConflict()
 
-        self.need_lands = self.np.array([9, 10, 11, 12, 13])
-        self.need_size = self.np.array([18, 19, 20, 21, 22, 23])  # min and max
+        self.need_lands = settings.need_lands
+        self.need_size = settings.need_size
 
         size_of_land_helper = self.size_of_land.copy()
         for key, value in size_of_land_helper.items():

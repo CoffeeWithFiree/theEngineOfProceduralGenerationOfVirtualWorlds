@@ -1,7 +1,3 @@
-from turtledemo.penrose import start
-
-from numpy.ma.core import empty
-
 from settings import settings
 from BiomesType import BiomesType
 import random
@@ -22,8 +18,8 @@ class OrderingIsland:
         #POST-PROCESSING
         self.FixDiagonalConflict()
 
-        self.need_lands = self.np.array([9, 10, 11, 12, 13])
-        self.need_size = self.np.array([18, 19, 20, 21, 22, 23])  # min and max
+        self.need_lands = settings.need_lands
+        self.need_size = settings.need_size
 
         status_amount_of_lands = self.SetStatusAmount()
         while (not (self.amounts_lands in self.need_lands)) or (any(v not in self.need_size for v in self.size_of_land.values())):
@@ -32,7 +28,7 @@ class OrderingIsland:
             for key, value in size_of_land_helper.items():
                 centr, sides_x, sides_y = SIGCAB.SearcIslGeomCentAndBords(key, self.matrix_cond)
                 if value < self.need_size[0]:
-                    if status_amount_of_lands == "more":    ####GOOD#####
+                    if status_amount_of_lands == "more":
                         self.DeleteIsland(key, sides_x, sides_y)
                         del self.size_of_land[key]
                         self.amounts_lands = self.amounts_lands - 1
@@ -49,11 +45,11 @@ class OrderingIsland:
                 elif value > self.need_size[-1]:
 
                     if status_amount_of_lands == "more" or status_amount_of_lands == "equel":
-                        self.ReducingSize(key, sides_x, sides_y) ####GOOD#####
+                        self.ReducingSize(key, sides_x, sides_y)
                         signal_was_change = True
 
                     elif status_amount_of_lands == "less":
-                        self.Cut(key, centr, sides_x, sides_y) ####GOOD####
+                        self.Cut(key, centr, sides_x, sides_y)
 
                         max_key = max(self.size_of_land)
                         number_of_matrix = max_key + 1
@@ -87,9 +83,8 @@ class OrderingIsland:
                             elif self.size_of_land[i] < self.need_size[0]:
                                 if self.Expansion(i, sides_x,sides_y):
                                     self.DeleteIsland(key, sides_x, sides_y)
-                                    del self.size_of_land[key] #Возникла ошибка KEYERROR
+                                    del self.size_of_land[key]
                                     self.CreateNewIsland()
-                        ###
 
                         signal_was_change = True
 

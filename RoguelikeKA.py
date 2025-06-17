@@ -23,12 +23,9 @@ class RoguelikeKA:
         for _ in range(20):
             self.NextGenerationLands()
 
-        #Every Land ~18-23 cells, 9-13 lands
-
         #2 iterations of island ordering
         for i in range(2):
             self.OrdIsland()
-            # self.ExportMatricesToExcel(f"matrix{i}.xlsx", f"matrix_cond{i}.xlsx")
 
         #Post-Processing after Ordering
         self.matrix_cond, self.size_of_land, self.amounts_lands = self.CounterLand()
@@ -149,7 +146,6 @@ class RoguelikeKA:
                         objects[f"object{i}"] = object_cur
                         i += 1
 
-                    #print(x, y, z)
                     if self.matrix[x, y, z] == BiomesType.land_RL:
                         CreateObj(triangles_land)
 

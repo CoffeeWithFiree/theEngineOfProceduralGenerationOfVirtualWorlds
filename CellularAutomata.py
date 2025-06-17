@@ -9,17 +9,14 @@ class CellularAutomata():
         self.np = np
         self.graphic3D = graphic3D
 
-
-
         self.matrix = self.create_start_matrix()
-
 
     def create_start_matrix(self):
         Res_x = settings.width  #Right
         Res_y = settings.height  #Up
         Res_z = settings.length  #forward
 
-        matrix = self.np.zeros((Res_x, Res_y, Res_z))  #Фиксация по оси y: matrix[:, y, :]
+        matrix = self.np.zeros((Res_x, Res_y, Res_z))  #y-axis fixation: matrix[:, y, :]
 
         for x in range(Res_x):
             for z in range(Res_z):
@@ -65,7 +62,6 @@ class CellularAutomata():
         for x in range(Res_x):
             for z in range(Res_z):
                 for y in range(Res_y):
-                    #print(x, y, z)
                     if self.matrix[x, y, z] == BiomesType.land:
                         vertices_cur = vertices
                         triangles_cur = triangles_land
