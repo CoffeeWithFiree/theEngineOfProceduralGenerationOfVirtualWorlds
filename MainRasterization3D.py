@@ -1,6 +1,5 @@
 from Rasterization3D import Rasterization3D
-from RoguelikeKA import RoguelikeKA
-
+from CellularAutomata import CellularAutomata
 import numpy as np
 import pygame as pg
 
@@ -10,7 +9,7 @@ class main():
     def __init__(self):
         self.graphic3D = Rasterization3D(self, pg, np)
         self.screen = self.graphic3D.screen
-        self.cell_automata = RoguelikeKA(self, pg, np, self.graphic3D)
+        self.cell_automata = CellularAutomata(self, pg, np, self.graphic3D)
 
     def run(self):
 

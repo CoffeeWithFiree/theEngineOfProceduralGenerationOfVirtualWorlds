@@ -7,7 +7,7 @@ from PostProcessingAfterOrdering import PostProcessingAfterOrdering
 from Tunneling import Tunneling
 from WriteExcel import WriteExcel
 from StartAndEnd import StartAndEnd
-from CellsAround import CellsAround
+from DayAndNight import DayAndNight
 
 class RoguelikeKA:
     def __init__(self, main, pg, np, graphic3D):
@@ -21,7 +21,7 @@ class RoguelikeKA:
 
         #Order out of chaos
         for _ in range(20):
-            self.NextGenerationLands()
+            DayAndNight.NextGenerationLands(self.matrix, settings.columns, settings.rows, BiomesType.air_RL, BiomesType.land_RL)
 
         #2 iterations of island ordering
         for i in range(2):
@@ -159,36 +159,6 @@ class RoguelikeKA:
                         CreateObj(triangles_end)
 
         self.graphic3D.RenderScene(objects)
-
-    def NextGenerationLands(self):
-        """the ordered state of land and sea"""
-        y = 0 #Use just for first layer
-        warning_amounts = [3, 6, 7, 8]
-
-        for x in range(len(self.matrix)):
-            for z in range(len(self.matrix[x, y])):
-                counters = {"land_counter": 0,
-                            "air_counter": 0}
-
-
-                def NextGenHelper(x, z):
-                    if self.matrix[x][y][z] == BiomesType.land_RL:
-                        counters["land_counter"] += 1
-                    else:
-                        counters["air_counter"] += 1
-
-                CellsAround.EightCellsAround(x, z, NextGenHelper)
-
-                #current cell is land
-                if self.matrix[x][y][z] == BiomesType.land_RL:
-                    if counters["air_counter"] in warning_amounts:
-                        self.matrix[x][y][z] = BiomesType.air_RL
-
-                #current cell is air
-                elif self.matrix[x][y][z] == BiomesType.air_RL:
-                    if counters["land_counter"] in warning_amounts:
-                        self.matrix[x][y][z] = BiomesType.land_RL
-
 
     def CounterLand(self):
         """a counter for the number of islands and their sizes"""
