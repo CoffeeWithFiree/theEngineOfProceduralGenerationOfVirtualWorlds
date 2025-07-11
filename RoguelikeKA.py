@@ -142,7 +142,7 @@ class RoguelikeKA:
                         vertices_cur = vertices
                         triangles_cur = triangles
                         position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
-                        object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
+                        object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "position": position_cur}
                         objects[f"object{i}"] = object_cur
                         i += 1
 

@@ -56,7 +56,7 @@ class Rasterization3D:
         """Render every object after translation"""
         projected = []
         for v in object["vertices"].values():
-            V_coordinates = v + object["postition"]
+            V_coordinates = v + object["position"]
             projected.append(self.ProjectVertex(V_coordinates))
 
         for t in object["triangles"].values():

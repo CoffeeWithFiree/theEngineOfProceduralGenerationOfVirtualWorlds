@@ -1,6 +1,7 @@
 from settings import settings
 from BiomesType import BiomesType
 from DayAndNight import DayAndNight
+from ExportWorld import ExportWorld
 import random
 
 class CellularAutomata():
@@ -14,6 +15,10 @@ class CellularAutomata():
 
         for _ in range(100):
             self.matrix = DayAndNight.NextGenerationLands(self.matrix, settings.width, settings.length, BiomesType.sea, BiomesType.land)
+
+        self.MatrixHigh()
+
+
 
     def CreateStartMatrix(self):
         Res_x = settings.width  #Right
@@ -32,25 +37,23 @@ class CellularAutomata():
                     matrix[x, 0, z] = BiomesType.sea
         return matrix
 
-    # def CreateStartMatrixHigh(self): #ИСПОЛЬЗОВАТЬ ПРИ СОЗДАНИИ ВЫСОТ
-    #     Res_x = settings.width  #Right
-    #     Res_y = settings.height  #Up
-    #     Res_z = settings.length  #forward
-    #
-    #     matrix = self.np.zeros((Res_x, Res_y, Res_z))  #y-axis fixation: matrix[:, y, :]
-    #
-    #     for x in range(Res_x):
-    #         for z in range(Res_z):
-    #             ver = 0
-    #             step = 100 / Res_y
-    #             for y in range(Res_y -1, -1, -1):
-    #                 r = random.randint(1, 100)
-    #                 if r > ver:
-    #                     matrix[x, y, z] = BiomesType.land
-    #                     ver += step
-    #                 else:
-    #                     break
-    #     return matrix
+    def MatrixHigh(self): #Горы строятся вниз?
+        Res_x = settings.width  #Right
+        Res_y = settings.height  #Up
+        Res_z = settings.length  #forward
+
+        for x in range(Res_x):
+            for z in range(Res_z):
+                if self.matrix[x, 0, z] == BiomesType.land:
+                    step = 100 / Res_y
+                    ver = step
+                    for y in range(1, Res_y, 1):
+                        r = random.randint(1, 100)
+                        if r > ver:
+                            self.matrix[x, y, z] = BiomesType.land
+                            ver += step
+                        else:
+                            break
 
     def DrawingScene(self):
 
@@ -101,8 +104,8 @@ class CellularAutomata():
                         nonlocal i
                         vertices_cur = vertices
                         triangles_cur = triangles
-                        position_cur = self.np.array([x * 2 + 15, y * 2 + 35, z * 2 + 25])
-                        object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "postition": position_cur}
+                        position_cur = self.np.array([x * 2 + 15, (y * 2 + 35), z * 2 + 25]) #For rendering, y * (-1) For exporting, do not multiply by (-1)
+                        object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "position": position_cur}
                         objects[f"object{i}"] = object_cur
                         i += 1
 
@@ -112,4 +115,6 @@ class CellularAutomata():
                         elif self.matrix[x, y, z] == BiomesType.sea:
                             CreateObj(triangles_sea)
 
-        self.graphic3D.RenderScene(objects)
+        ExportWorld.ExportToOBJ(objects)
+
+        #self.graphic3D.RenderScene(objects)
