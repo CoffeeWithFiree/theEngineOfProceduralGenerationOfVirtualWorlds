@@ -17,6 +17,9 @@ class CellularAutomata():
             self.matrix = DayAndNight.NextGenerationLands(self.matrix, settings.width, settings.length, BiomesType.sea, BiomesType.land)
 
         self.MatrixHigh()
+        for _ in range(100):
+            for y in range(1, settings.height):
+                self.matrix = DayAndNight.NextGenerationLandsForHigh(self.matrix, settings.width, settings.length, BiomesType.air, BiomesType.land, y)
 
 
 
@@ -104,7 +107,7 @@ class CellularAutomata():
                         nonlocal i
                         vertices_cur = vertices
                         triangles_cur = triangles
-                        position_cur = self.np.array([x * 2 + 15, (y * 2 + 35), z * 2 + 25]) #For rendering, y * (-1) For exporting, do not multiply by (-1)
+                        position_cur = self.np.array([x * 2 + 15, (y * 2 + 35), z * 2 + 25]) #For rendering y * (-1), For exporting not multiply by (-1)
                         object_cur = {"vertices": vertices_cur, "triangles": triangles_cur, "position": position_cur}
                         objects[f"object{i}"] = object_cur
                         i += 1

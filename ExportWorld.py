@@ -9,7 +9,7 @@ class ExportWorld():
             all_faces = []
 
             for obj in objects.values():
-                print(obj)
+                #print(obj)
                 position = obj["position"]
                 local_vertex_map = {}
 
@@ -29,3 +29,4 @@ class ExportWorld():
             f.write("\n".join(all_vertices) + "\n")
             f.write("\n".join(all_faces) + "\n")
             f.close()
+            print("Exported OBJ successfully")
