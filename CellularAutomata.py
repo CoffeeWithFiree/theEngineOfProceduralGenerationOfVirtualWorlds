@@ -21,6 +21,16 @@ class CellularAutomata():
             for y in range(1, settings.height):
                 self.matrix = DayAndNight.NextGenerationLandsForHigh(self.matrix, settings.width, settings.length, BiomesType.air, BiomesType.land, y)
 
+        #Water height level
+        r = random.randint(0,3)
+        print(f"water height level = {r}")
+        if r > 0:
+            for x in range(0, settings.width):
+                for y in range(1, r + 1):
+                    for z in range(0, settings.length):
+                        self.matrix[x][y][z] = BiomesType.sea
+
+
 
 
     def CreateStartMatrix(self):

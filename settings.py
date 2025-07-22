@@ -12,11 +12,11 @@ class settings():
 
     #y is height
 
-    Res = [80, 24, 80] #x #y #z
+    Res = [160, 24, 160] #x #y #z
 
-    width = 40  #x
-    height = 12#y
-    length = 40 #z
+    width = 80  #x
+    height = 12 #y
+    length = 80 #z
 
     color_land = (0, 153, 0)
     color_sea = (0, 102, 255)

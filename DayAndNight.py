@@ -56,11 +56,12 @@ class DayAndNight():
                     # current cell is land
                     if matrix[x][y][z] == second_type:
                         if counters["air_counter"] in warning_amounts:
-                            if matrix[x][y + 1][z] == first_type:
+                            if y + 1 < matrix.shape[1] and matrix[x][y + 1][z] == first_type:
                                 matrix[x][y][z] = first_type
 
                     # current cell is air
                     elif matrix[x][y][z] == first_type:
                         if counters["land_counter"] in warning_amounts:
-                            matrix[x][y][z] = second_type
+                            if y > 0 and matrix[x][y - 1][z] == second_type:
+                                matrix[x][y][z] = second_type
         return matrix
