@@ -7,13 +7,15 @@ import pygame as pg
 class main():
 
     def __init__(self):
+        pg.init()
         self.graphic3D = Rasterization3D(self, pg, np)
         self.screen = self.graphic3D.screen
         self.cell_automata = CellularAutomata(self, pg, np, self.graphic3D)
 
+        self.font = pg.font.SysFont('Arial', 30)
+
     def run(self):
 
-        pg.init()
 
         pg.display.set_caption('Rasterization')
 
@@ -26,6 +28,10 @@ class main():
             self.screen.fill((255, 255, 255))
 
             self.cell_automata.DrawingScene()
+
+            text = self.font.render("Generation complete", True, (0, 0, 0))
+            text_rect = text.get_rect(center=(self.screen.get_width() / 2, self.screen.get_height() / 2))
+            self.screen.blit(text, text_rect)
 
             pg.display.flip()
 
