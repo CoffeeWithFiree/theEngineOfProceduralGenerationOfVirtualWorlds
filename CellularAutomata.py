@@ -22,11 +22,11 @@ class CellularAutomata():
                 self.matrix = DayAndNight.NextGenerationLandsForHigh(self.matrix, settings.width, settings.length, BiomesType.air, BiomesType.land, y)
 
         #Water height level
-        r = random.randint(0,3)
-        print(f"water height level = {r}")
-        if r > 0:
+        h = settings.height_water
+        print(f"water height level = {h}")
+        if h > 0:
             for x in range(0, settings.width):
-                for y in range(1, r + 1):
+                for y in range(1, h + 1):
                     for z in range(0, settings.length):
                         self.matrix[x][y][z] = BiomesType.sea
 
@@ -50,7 +50,7 @@ class CellularAutomata():
                     matrix[x, 0, z] = BiomesType.sea
         return matrix
 
-    def MatrixHigh(self): #Горы строятся вниз?
+    def MatrixHigh(self):
         Res_x = settings.width  #Right
         Res_y = settings.height  #Up
         Res_z = settings.length  #forward

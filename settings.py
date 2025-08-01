@@ -1,4 +1,5 @@
 import numpy as np
+import random
 class settings():
     Vw = 1400
     Vh = 1000
@@ -20,6 +21,8 @@ class settings():
 
     color_land = (0, 153, 0)
     color_sea = (0, 102, 255)
+
+    height_water = random.randint(0,3)
 
     #RougeLikeKA
 
