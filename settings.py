@@ -24,6 +24,9 @@ class settings():
 
     height_water = random.randint(0,3)
 
+    day_and_night_base = 100
+    day_and_night_height = 50
+
     #RougeLikeKA
 
     need_lands = np.array([9, 10, 11, 12, 13])

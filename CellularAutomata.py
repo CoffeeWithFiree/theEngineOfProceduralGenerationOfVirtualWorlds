@@ -13,11 +13,11 @@ class CellularAutomata():
 
         self.matrix = self.CreateStartMatrix()
 
-        for _ in range(100):
+        for _ in range(settings.day_and_night_base):
             self.matrix = DayAndNight.NextGenerationLands(self.matrix, settings.width, settings.length, BiomesType.sea, BiomesType.land)
 
         self.MatrixHigh()
-        for _ in range(100):
+        for _ in range(settings.day_and_night_height):
             for y in range(1, settings.height):
                 self.matrix = DayAndNight.NextGenerationLandsForHigh(self.matrix, settings.width, settings.length, BiomesType.air, BiomesType.land, y)
 
