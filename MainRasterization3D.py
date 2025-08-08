@@ -10,7 +10,7 @@ class main():
         pg.init()
         self.graphic3D = Rasterization3D(self, pg, np)
         self.screen = self.graphic3D.screen
-        self.cell_automata = CellularAutomata(self, pg, np, self.graphic3D)
+        self.cell_automata = CellularAutomata(pg, np, self.graphic3D)
 
         self.font = pg.font.SysFont('Arial', 30)
 

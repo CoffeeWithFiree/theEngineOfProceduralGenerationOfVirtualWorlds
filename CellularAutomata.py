@@ -5,8 +5,7 @@ from ExportWorld import ExportWorld
 import random
 
 class CellularAutomata():
-    def __init__(self, main, pg, np, graphic3D):
-        self.main = main
+    def __init__(self, pg, np, graphic3D):
         self.pg = pg
         self.np = np
         self.graphic3D = graphic3D
