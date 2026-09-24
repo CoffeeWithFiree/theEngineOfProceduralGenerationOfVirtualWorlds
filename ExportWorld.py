@@ -72,24 +72,6 @@ class ExportWorld():
 
         vertex_counter = PassCubes(objects, BiomesType.land, land_vertices, land_faces, vertex_counter)
 
-        # for obj in objects.values():
-        #     if obj["biome"] != BiomesType.land:
-        #         continue
-        #     position = np.array(obj["position"])
-        #     local_to_global = {}
-        #
-        #     for local_id, v in obj["vertices"].items():
-        #         wp = np.array(v) + position
-        #         land_vertices.append(f"v {wp[0]:.6f} {wp[1]:.6f} {wp[2]:.6f}")
-        #         local_to_global[local_id] = vertex_counter
-        #         vertex_counter += 1
-        #
-        #     for face in obj["triangles"].values():
-        #         if isinstance(face, dict):
-        #             idx = [str(local_to_global[k]) for k in face.keys() if isinstance(k, int)]
-        #             if len(idx) in (3, 4):
-        #                 land_faces.append(f"f {' '.join(idx)}")
-
         #PASS 2: SEA
 
         vertex_counter = PassCubes(objects, BiomesType.sea, sea_vertices, sea_faces, vertex_counter)
@@ -112,39 +94,6 @@ class ExportWorld():
                 f.write("usemtl sea\n")
                 f.write("s 0\n")
                 f.write("\n".join(sea_faces) + "\n")
-
-
-        # #Write OBJ file
-        # with open(filepath, "w") as f:
-        #     f.write("OBJ\n")
-        #     f.write(f"mtllib {mtl_basename}\n\n")
-        #
-        #     vertex_offset = 1
-        #     for obj_name, obj in objects.items():
-        #         f.write(f"o {obj_name}\n")
-        #
-        #         #Write verticex
-        #         position = np.array(obj["position"])
-        #         for v in obj["vertices"].values():
-        #             vertex_pos = (np.array(v) + position).tolist()
-        #             f.write(f"v {vertex_pos[0]:.6f} {vertex_pos[1]:.6f} {vertex_pos[2]:.6f}\n")
-        #
-        #         #Write faces with material
-        #         biome_type = obj["biome"]
-        #         material = "land" if biome_type == BiomesType.land else "sea"
-        #         f.write(f"usemtl {material}\n")
-        #         f.write("s 0\n") #Smoothing group
-        #
-        #         #Write quad faces (4 vertices each)
-        #         for face in obj["triangles"].values():
-        #             if isinstance(face, dict):
-        #                 indices = [str(vertex_offset + int(k)) for k in face.keys() if isinstance(k, (int, float)) and k not in ("color", "uv")]
-        #
-        #                 if len(indices) == 4:
-        #                     f.write(f"f {' '.join(indices)}\n")
-        #                 elif len(indices) == 3:
-        #                     f.write(f"f {' '.join(indices)}\n")
-        #         vertex_offset += len(obj["vertices"])
 
         print(f"successfully exported to {filepath} and {mtl_basename}")
 
