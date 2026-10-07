@@ -13,11 +13,11 @@ class settings():
 
     #y is height
 
-    Res = [160, 24, 160] #x #y #z
+    Res = [320, 48, 320] #x #y #z
 
-    width = 80  #x
-    height = 12 #y
-    length = 80 #z
+    width = Res[0] // 2  #x
+    height = Res[1] // 2 #y
+    length = Res[2] // 2 #z
 
     color_land = (0, 153, 0)
     color_sea = (0, 102, 255)
@@ -25,7 +25,7 @@ class settings():
     height_water = random.randint(0,3)
 
     day_and_night_base = 100
-    day_and_night_height = 50
+    day_and_night_height = 80
 
     average_percentage_sea = 50 #0 - 100, >= 100: full sea; <= 0 full land
 
